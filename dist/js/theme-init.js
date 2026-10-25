@@ -1,0 +1,1 @@
+try{localStorage.getItem("cpcs-theme")==="light"&&(document.documentElement.dataset.theme="light")}catch{}

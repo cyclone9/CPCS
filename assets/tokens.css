@@ -1,0 +1,39 @@
+/* CPCS colour tokens. Source of truth: brand.json. Palette and dark default approved by the owner (2026-10-25).
+   Primitives: --cpcs-<token>. Semantic aliases: --cpcs-color-*, dark theme by default (the owner's choice, 2026-10-25;
+   proposed with a light default on 2026-10-16), light theme under [data-theme="light"] or .cpcs-light. Aliases point at primitives only.
+   The accent is for one element per mark (the card or the tile) and for links, buttons and focus; Crimson is never
+   body text on Paper, Deep Crimson never body text on Ink. */
+:root {
+  --cpcs-crimson: #F4465E;
+  --cpcs-crimson-deep: #C9173A;
+  --cpcs-ink: #1B1417;
+  --cpcs-slate: #2A1C21;
+  --cpcs-paper: #F7F2F3;
+  --cpcs-white: #FFFFFF;
+  --cpcs-muted: #6E5A61;
+  --cpcs-muted-light: #AD9CA3;
+
+  /* Dark theme (default): the studio at night */
+  --cpcs-color-bg: var(--cpcs-ink);
+  --cpcs-color-surface: var(--cpcs-slate);
+  --cpcs-color-text: var(--cpcs-paper);
+  --cpcs-color-muted: var(--cpcs-muted-light);
+  --cpcs-color-accent: var(--cpcs-crimson);
+  --cpcs-color-on-accent: var(--cpcs-ink);
+  --cpcs-color-logo: var(--cpcs-paper);
+  --cpcs-color-logo-accent: var(--cpcs-crimson);
+  --cpcs-color-border: var(--cpcs-muted-light);
+}
+
+[data-theme="light"],
+.cpcs-light {
+  --cpcs-color-bg: var(--cpcs-paper);
+  --cpcs-color-surface: var(--cpcs-white);
+  --cpcs-color-text: var(--cpcs-ink);
+  --cpcs-color-muted: var(--cpcs-muted);
+  --cpcs-color-accent: var(--cpcs-crimson-deep);
+  --cpcs-color-on-accent: var(--cpcs-white);
+  --cpcs-color-logo: var(--cpcs-ink);
+  --cpcs-color-logo-accent: var(--cpcs-crimson-deep);
+  --cpcs-color-border: var(--cpcs-muted);
+}

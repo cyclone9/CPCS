@@ -1,0 +1,20 @@
+{
+  "name": "cpcs",
+  "version": "0.5.0",
+  "private": true,
+  "description": "CPCS - CyClone Power Card Studio",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "preview": "node scripts/serve.js 8732",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "pako": "^1.0.11",
+    "upng-js": "2.1.0"
+  }
+}

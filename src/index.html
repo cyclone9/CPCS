@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; font-src 'self' data:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark light">
+<title>{{pageTitle}}</title>
+<meta name="description" content="{{metaDescription}}">
+<link rel="icon" href="assets/favicon/favicon.ico" sizes="48x48">
+<link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="assets/favicon/site.webmanifest">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="css/app.css">
+<script src="js/theme-init.js"></script>
+<script defer src="vendor/pako_deflate.min.js"></script>
+<script defer src="vendor/UPNG.js"></script>
+<script type="module" src="js/app.js"></script>
+</head>
+<body>
+<header class="top" id="top" tabindex="-1">
+  <div class="brand">
+    <img class="lockup lockup-on-dark" src="assets/logo/cpcs-lockup-fa-on-dark.svg" alt="{{logoAlt}}" width="186" height="30">
+    <img class="lockup lockup-on-light" src="assets/logo/cpcs-lockup-fa-on-light.svg" alt="{{logoAlt}}" width="186" height="30">
+    <p class="tagline">{{tagline}}</p>
+  </div>
+  <button type="button" class="theme-toggle" id="theme-toggle" data-light="{{themeToLight}}" data-dark="{{themeToDark}}" aria-label="{{themeToLight}}" title="{{themeToLight}}">
+    <svg class="icon icon-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="12" cy="12" r="4.5"/>
+      <path d="M12 1.5v2.5M12 20v2.5M1.5 12H4M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/>
+    </svg>
+    <svg class="icon icon-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+      <path d="M20.5 14.6A8.5 8.5 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1z"/>
+    </svg>
+  </button>
+</header>
+
+<noscript><p class="noscript">{{noscript}}</p></noscript>
+
+<main class="page">
+<div class="studio">
+  <section class="preview" aria-label="{{previewLabel}}">
+    <svg id="card" class="card" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 856 540" role="img"></svg>
+  </section>
+
+  <form class="editor" id="editor" novalidate autocomplete="off">
+    <div class="field">
+      <label for="card-number">{{cardLabel}}</label>
+      <div class="clearable">
+        <input id="card-number" class="digits" type="text" dir="ltr" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="{{cardPlaceholder}}" aria-describedby="card-status">
+        <button type="button" class="clear" id="card-number-clear" tabindex="-1" aria-label="{{clearCard}}" title="{{clearCard}}" hidden><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <p class="status" id="card-status" aria-live="polite"></p>
+    </div>
+
+    <div class="field">
+      <label for="bank" id="bank-label">{{bankLabel}}</label>
+      <div class="combo" id="bank-combo">
+        <input id="bank" type="text" dir="rtl" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="bank-list" autocomplete="off" spellcheck="false" placeholder="{{bankSearchPlaceholder}}" aria-describedby="bank-status" value="{{bankAuto}}">
+        <svg class="combo-chevron" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        <ul class="combo-list" id="bank-list" role="listbox" aria-labelledby="bank-label" hidden></ul>
+      </div>
+      <p class="status" id="bank-status" aria-live="polite"></p>
+    </div>
+
+    <div class="field">
+      <label for="holder">{{nameLabel}}</label>
+      <div class="clearable">
+        <input id="holder" type="text" dir="rtl" autocomplete="off" spellcheck="false" maxlength="48" placeholder="{{namePlaceholder}}">
+        <button type="button" class="clear" id="holder-clear" tabindex="-1" aria-label="{{clearHolder}}" title="{{clearHolder}}" hidden><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="switch"><input type="checkbox" id="iban-on"><span>{{ibanToggle}}</span></label>
+      <div class="iban-box" id="iban-box" hidden>
+        <label for="iban" class="visually-hidden">{{ibanLabel}}</label>
+        <div class="clearable">
+          <input id="iban" class="digits" type="text" dir="ltr" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="{{ibanPlaceholder}}" aria-describedby="iban-status">
+          <button type="button" class="clear" id="iban-clear" tabindex="-1" aria-label="{{clearIban}}" title="{{clearIban}}" hidden><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <p class="status" id="iban-status" aria-live="polite"></p>
+        <p class="status" id="iban-match" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <fieldset class="field choice">
+      <legend>{{digitsLabel}}</legend>
+      <label><input type="radio" name="digits" value="fa" checked><span>{{digitsFa}}</span></label>
+      <label><input type="radio" name="digits" value="en"><span>{{digitsEn}}</span></label>
+    </fieldset>
+
+    <fieldset class="field choice">
+      <legend>{{templateLabel}}</legend>
+      <label><input type="radio" name="template" value="full" checked><span>{{templateFull}}</span></label>
+      <label><input type="radio" name="template" value="band"><span>{{templateBand}}</span></label>
+    </fieldset>
+
+    <div class="field">
+      <label for="color">{{colorLabel}}</label>
+      <div class="color-row">
+        <input id="color" type="color">
+        <button type="button" class="ghost" id="color-reset">{{colorReset}}</button>
+      </div>
+    </div>
+
+    <fieldset class="field choice">
+      <legend>{{sizeLabel}}</legend>
+      <label><input type="radio" name="size" value="1" checked><span id="size-1"></span></label>
+      <label><input type="radio" name="size" value="2"><span id="size-2"></span></label>
+    </fieldset>
+
+    <div class="field">
+      <label class="check"><input type="checkbox" id="smaller"><span>{{smaller}}</span></label>
+      <p class="hint">{{smallerHint}}</p>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="primary" id="download" disabled>{{download}}</button>
+      <button type="button" class="secondary" id="share" hidden disabled>{{share}}</button>
+      <p class="status" id="export-status" aria-live="polite"></p>
+    </div>
+  </form>
+</div>
+
+  <div class="notices">
+    <div class="notice">
+      <svg class="notice-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      <p>{{privacy}}</p>
+    </div>
+    <div class="notice">
+      <svg class="notice-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+      <p>{{logosNotice}}</p>
+    </div>
+  </div>
+</main>
+
+<footer class="bottom">
+  <p class="motto">{{motto}}</p>
+  <p class="links"><a href="https://cyclone9.ir/cpcs" rel="noopener">{{productLink}}</a> · <a href="https://github.com/cyclone9/CPCS" rel="noopener">{{codeLink}}</a></p>
+  <p class="copyright" dir="ltr" lang="en"><span class="part">© <span id="copyright-years">{{startYear}}</span> {{copyrightHolder}}</span><span class="sep" aria-hidden="true"> · </span><span class="part">{{fullName}}</span><span class="part version">{{versionLabel}} {{version}}</span></p>
+</footer>
+
+<button type="button" class="to-top" id="to-top" aria-label="{{toTop}}" title="{{toTop}}">
+  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+</body>
+</html>

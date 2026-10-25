@@ -1,0 +1,1 @@
+export const START_YEAR=2026;export function yearRange(e,t=START_YEAR){return e>t?`${t}–${e}`:String(t)}

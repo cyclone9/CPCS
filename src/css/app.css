@@ -1,0 +1,413 @@
+@font-face {
+  font-family: Vazirmatn;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/Vazirmatn-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: Vazirmatn;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/Vazirmatn-Medium.ttf") format("truetype");
+}
+@font-face {
+  font-family: Vazirmatn;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/Vazirmatn-Bold.ttf") format("truetype");
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { color-scheme: dark; }
+html[data-theme="light"] { color-scheme: light; }
+
+body {
+  margin: 0;
+  /* Room under the footer for the back-to-top button at the end of the page. */
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  min-height: 100vh;
+  background: var(--cpcs-color-bg);
+  color: var(--cpcs-color-text);
+  font-family: Vazirmatn, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+a { color: var(--cpcs-color-accent); }
+
+:focus-visible {
+  outline: 2px solid var(--cpcs-color-accent);
+  outline-offset: 2px;
+}
+
+[hidden] { display: none !important; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Header */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1rem 0.5rem;
+  max-width: 76rem;
+  margin: 0 auto;
+}
+.top:focus { outline: none; }
+.brand { min-width: 0; }
+.lockup { display: block; height: 1.75rem; width: auto; }
+.lockup-on-light { display: none; }
+[data-theme="light"] .lockup-on-dark { display: none; }
+[data-theme="light"] .lockup-on-light { display: block; }
+.tagline {
+  margin: 0.35rem 0 0;
+  color: var(--cpcs-color-muted);
+  font-size: 0.9rem;
+}
+
+.noscript { padding: 0 1rem; color: var(--cpcs-color-accent); }
+
+/* Layout: phone first, the card above the form */
+.page {
+  padding: 0.75rem 1rem 2rem;
+  max-width: 76rem;
+  margin: 0 auto;
+}
+/* The sticky preview is confined to this grid, so it never slides over the notices below it. */
+.studio {
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* No panel fill: the default card colour is Slate, the dark theme's surface. */
+.preview, .editor {
+  border: 1px solid var(--cpcs-color-surface);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+.card {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 856 / 540;
+}
+
+@media (min-width: 900px) {
+  .studio {
+    grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+    grid-template-areas: "editor preview";
+    align-items: start;
+    gap: 2rem;
+  }
+  .editor { grid-area: editor; padding: 1.5rem; }
+  .preview {
+    grid-area: preview;
+    position: sticky;
+    top: 1rem;
+    padding: 2rem;
+  }
+}
+
+/* Form */
+.editor { display: grid; gap: 1.1rem; }
+
+.field { display: grid; gap: 0.4rem; min-width: 0; }
+
+fieldset.field {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+label, legend { font-weight: 500; }
+legend { padding: 0; margin-bottom: 0.4rem; }
+
+input[type="text"] {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--cpcs-color-border);
+  border-radius: 0.6rem;
+  background: var(--cpcs-color-surface);
+  color: var(--cpcs-color-text);
+  font: inherit;
+}
+input::placeholder { color: var(--cpcs-color-muted); opacity: 1; }
+
+input.digits {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-align: left;
+  unicode-bidi: isolate;
+}
+/* All 32 characters must fit beside the clear button without scrolling inside the field: sized from the
+   field's own width (its .clearable is the container), 19.6 ≈ 32 monospace advances of 0.6 em plus slack. */
+#iban {
+  font-size: clamp(0.75rem, (100cqi - 2px - 0.8rem - var(--clear-size) - var(--clear-gap)) / 19.6, 1.15rem);
+  letter-spacing: 0;
+}
+
+.choice { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.choice legend { width: 100%; }
+.choice label, .check, .switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+input[type="radio"], input[type="checkbox"] {
+  accent-color: var(--cpcs-color-accent);
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+}
+.switch { font-weight: 500; }
+
+.iban-box { display: grid; gap: 0.4rem; }
+
+/* Clear (×) button, overlaid at the end of the field's own text direction (physical sides: the
+   name field switches between rtl and ltr while the page stays rtl). */
+.clearable {
+  position: relative;
+  container-type: inline-size;
+  --clear-size: 2.5rem;
+  --clear-gap: 0.2rem;
+}
+@media (pointer: coarse), (max-width: 559px) {
+  .clearable { --clear-size: 2.75rem; }
+}
+.clearable > input[dir="ltr"] { padding-right: calc(var(--clear-size) + var(--clear-gap)); }
+.clearable > input[dir="rtl"] { padding-left: calc(var(--clear-size) + var(--clear-gap)); }
+.clear {
+  position: absolute;
+  top: 50%;
+  left: var(--clear-gap);
+  translate: 0 -50%;
+  display: inline-grid;
+  place-items: center;
+  width: var(--clear-size);
+  height: var(--clear-size);
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0.45rem;
+  background: transparent;
+  color: var(--cpcs-color-muted);
+}
+.clearable > input[dir="ltr"] + .clear { left: auto; right: var(--clear-gap); }
+.clear:hover, .clear:focus-visible { color: var(--cpcs-color-text); }
+.clear svg { display: block; }
+/* Only our button: no second, native one. */
+input::-ms-clear { display: none; }
+input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; display: none; }
+
+/* Bank combobox */
+.combo { position: relative; }
+.combo input { padding-inline-end: 2.5rem; text-overflow: ellipsis; }
+.combo-chevron {
+  position: absolute;
+  inset-inline-end: 0.8rem;
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--cpcs-color-muted);
+  pointer-events: none;
+}
+.combo-list {
+  position: absolute;
+  z-index: 20;
+  inset-inline: 0;
+  top: calc(100% + 0.25rem);
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  /* Small enough to sit above a phone keyboard once the field is scrolled to the top. */
+  max-height: min(18rem, 38vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--cpcs-color-border);
+  border-radius: 0.6rem;
+  background: var(--cpcs-color-surface);
+}
+.combo-option, .combo-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.45rem;
+}
+.combo-option { cursor: pointer; }
+.combo-option[aria-selected="true"] {
+  outline: 2px solid var(--cpcs-color-accent);
+  outline-offset: -2px;
+}
+@media (hover: hover) {
+  .combo-option:hover { background: var(--cpcs-color-bg); }
+}
+.combo-option.is-current { font-weight: 700; }
+.combo-empty { color: var(--cpcs-color-muted); }
+.combo-logo {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.combo-logo svg { width: 100%; height: 100%; }
+
+.color-row { display: flex; gap: 0.75rem; align-items: center; }
+input[type="color"] {
+  width: 3.5rem;
+  height: 2.6rem;
+  padding: 0.2rem;
+  border: 1px solid var(--cpcs-color-border);
+  border-radius: 0.6rem;
+  background: var(--cpcs-color-surface);
+  cursor: pointer;
+}
+
+.hint { margin: 0; color: var(--cpcs-color-muted); font-size: 0.85rem; }
+
+/* Status lines and notices */
+.status { margin: 0; min-height: 0; font-size: 0.9rem; color: var(--cpcs-color-muted); }
+.status:empty { display: none; }
+.status[data-tone="error"] { color: var(--cpcs-color-accent); font-weight: 500; }
+.status[data-tone="ok"] { color: var(--cpcs-color-muted); }
+.status[data-tone="info"],
+.status[data-tone="warning"] {
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.6rem;
+  background: var(--cpcs-color-surface);
+  color: var(--cpcs-color-text);
+  border-inline-start: 3px solid var(--cpcs-color-border);
+}
+.status[data-tone="warning"] {
+  border: 2px solid var(--cpcs-color-accent);
+  border-inline-start-width: 6px;
+  font-weight: 500;
+}
+
+/* Buttons */
+button {
+  font: inherit;
+  min-height: 2.9rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.6rem;
+  cursor: pointer;
+}
+button:disabled { cursor: not-allowed; opacity: 0.45; }
+.primary {
+  border: 0;
+  background: var(--cpcs-color-accent);
+  color: var(--cpcs-color-on-accent);
+  font-weight: 700;
+}
+.secondary, .ghost, .theme-toggle {
+  border: 1px solid var(--cpcs-color-border);
+  background: transparent;
+  color: var(--cpcs-color-text);
+}
+.ghost { min-height: 2.6rem; padding: 0.3rem 0.9rem; }
+.to-top {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-height: 0;
+  padding: 0;
+}
+.theme-toggle {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-height: 0;
+  padding: 0;
+  border-radius: 50%;
+}
+/* The notices sit under both columns, outside the sticky preview's grid. */
+.notices { margin-top: 1.5rem; }
+
+.icon { display: block; }
+.icon-moon { display: none; }
+[data-theme="light"] .icon-sun { display: none; }
+[data-theme="light"] .icon-moon { display: block; }
+
+/* Back to top: the far bottom corner of a right-to-left page is the left one. */
+.to-top {
+  position: fixed;
+  z-index: 10;
+  inset-inline-end: calc(1rem + env(safe-area-inset-left, 0px));
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  border: 1px solid var(--cpcs-color-border);
+  border-radius: 50%;
+  background: var(--cpcs-color-surface);
+  color: var(--cpcs-color-text);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0s linear 0.2s;
+}
+.to-top.is-shown {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .to-top, .to-top.is-shown { transition: none; }
+}
+
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+.actions .primary { flex: 1 1 12rem; }
+.actions .status { flex-basis: 100%; }
+
+/* Footer */
+.bottom {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 1rem 1rem 2rem;
+  border-top: 1px solid var(--cpcs-color-surface);
+  color: var(--cpcs-color-muted);
+  font-size: 0.9rem;
+}
+.bottom p { margin: 0.25rem 0; }
+.motto { color: var(--cpcs-color-text); }
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0.75rem 0;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--cpcs-color-accent) 45%, transparent);
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--cpcs-color-accent) 7%, var(--cpcs-color-bg));
+  color: var(--cpcs-color-text);
+}
+.notice p { margin: 0; }
+.notice-icon { flex: none; margin-top: 0.2rem; color: var(--cpcs-color-accent); }
+
+.bottom .copyright {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+}
+/* Break only between the parts, never inside one; on a phone, one part per line. */
+.copyright .part { white-space: nowrap; }
+/* The version always gets its own line. */
+.copyright .version { display: block; }
+@media (max-width: 559px) {
+  .copyright .part { display: block; }
+  .copyright .sep { display: none; }
+}

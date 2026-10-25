@@ -1,0 +1,478 @@
+[
+  {
+    "code": "019",
+    "slug": "SADERAT",
+    "fa": "بانک صادرات ایران",
+    "en": "Bank Saderat Iran",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "603769",
+      "903769"
+    ],
+    "logo": "bank-saderat",
+    "color": "#29166F"
+  },
+  {
+    "code": "010",
+    "slug": "MARKAZI",
+    "fa": "بانک مرکزی ایران",
+    "en": "Central Bank of Iran",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "636795",
+      "636797"
+    ],
+    "logo": "bank-markazi",
+    "color": "#001B49"
+  },
+  {
+    "code": "012",
+    "slug": "MELLAT",
+    "fa": "بانک ملت",
+    "en": "Bank Mellat",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "610433",
+      "991975"
+    ],
+    "logo": "bank-mellat",
+    "color": "#D12236"
+  },
+  {
+    "code": "013",
+    "slug": "REFAH",
+    "fa": "بانک رفاه",
+    "en": "Refah Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "589463"
+    ],
+    "logo": null,
+    "color": "#21409A"
+  },
+  {
+    "code": "014",
+    "slug": "MASKAN",
+    "fa": "بانک مسکن",
+    "en": "Bank Maskan",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "628023"
+    ],
+    "logo": "bank-maskan",
+    "color": "#E74C0A"
+  },
+  {
+    "code": "015",
+    "slug": "SEPAH",
+    "fa": "بانک سپه",
+    "en": "Sepah Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "589210"
+    ],
+    "logo": "bank-sepah",
+    "color": "#1B5FC1"
+  },
+  {
+    "code": "016",
+    "slug": "KESHAVARZI",
+    "fa": "بانک کشاورزی",
+    "en": "Bank Keshavarzi Iran",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "603770",
+      "639217"
+    ],
+    "logo": "bank-keshavarzi",
+    "color": "#00A652"
+  },
+  {
+    "code": "017",
+    "slug": "MELLI",
+    "fa": "بانک ملی ایران",
+    "en": "Bank Melli Iran",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "170019",
+      "603799"
+    ],
+    "logo": "bank-melli",
+    "color": "#ED1C24"
+  },
+  {
+    "code": "018",
+    "slug": "TEJARAT",
+    "fa": "بانک تجارت",
+    "en": "Bank Tejarat",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "585983",
+      "627353"
+    ],
+    "logo": "bank-tejarat",
+    "color": "#2F428D"
+  },
+  {
+    "code": "021",
+    "slug": "POST",
+    "fa": "پست بانک ایران",
+    "en": "Post Bank of Iran",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "627760"
+    ],
+    "logo": "bank-post",
+    "color": "#008840"
+  },
+  {
+    "code": "052",
+    "slug": "GHAVAMIN",
+    "fa": "بانک سپه",
+    "en": "Sepah Bank",
+    "status": "merged",
+    "enabled": true,
+    "old_fa": "بانک قوامین",
+    "old_en": "Ghavamin Bank",
+    "merged_into": "015",
+    "supported": false,
+    "bins": [
+      "639599"
+    ],
+    "logo": null
+  },
+  {
+    "code": "053",
+    "slug": "KARAFARIN",
+    "fa": "بانک کارآفرین",
+    "en": "Karafarin Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "502910",
+      "627488"
+    ],
+    "logo": "bank-karafarin",
+    "color": "#157215"
+  },
+  {
+    "code": "054",
+    "slug": "PARSIAN",
+    "fa": "بانک پارسیان",
+    "en": "Parsian Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "622106",
+      "627884",
+      "639194"
+    ],
+    "logo": "bank-parsian",
+    "color": "#A10F1F"
+  },
+  {
+    "code": "055",
+    "slug": "EGHTESAD_NOVIN",
+    "fa": "بانک اقتصاد نوین",
+    "en": "Eghtesad Novin Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "627412"
+    ],
+    "logo": "bank-eghtesadnovin",
+    "color": "#701E72"
+  },
+  {
+    "code": "056",
+    "slug": "SAMAN",
+    "fa": "بانک سامان",
+    "en": "Saman Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "621986"
+    ],
+    "logo": "bank-saman",
+    "color": "#014687"
+  },
+  {
+    "code": "057",
+    "slug": "PASARGAD",
+    "fa": "بانک پاسارگاد",
+    "en": "Pasargad Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "502229",
+      "639347"
+    ],
+    "logo": "bank-pasargad",
+    "color": "#FECC09"
+  },
+  {
+    "code": "058",
+    "slug": "SARMAYEH",
+    "fa": "بانک سرمایه",
+    "en": "Sarmayeh Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "639607"
+    ],
+    "logo": "bank-sarmayeh",
+    "color": "#0A436D"
+  },
+  {
+    "code": "059",
+    "slug": "SINA",
+    "fa": "بانک سینا",
+    "en": "Sina Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "639346"
+    ],
+    "logo": "bank-sina",
+    "color": "#243874"
+  },
+  {
+    "code": "060",
+    "slug": "MEHR_IRAN",
+    "fa": "بانک مهر ایران",
+    "en": "Mehr Iran Bank",
+    "status": "renamed",
+    "enabled": true,
+    "old_fa": "بانک قرض الحسنه مهر ایران",
+    "old_en": "Qarz Al-Hasaneh Mehr Iran Bank",
+    "supported": true,
+    "bins": [
+      "606373"
+    ],
+    "logo": null,
+    "color": "#209B1C"
+  },
+  {
+    "code": "061",
+    "slug": "SHAHR",
+    "fa": "بانک شهر",
+    "en": "Shahr Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "502806",
+      "504706"
+    ],
+    "logo": "bank-shahr",
+    "color": "#DD0000"
+  },
+  {
+    "code": "062",
+    "slug": "AYANDEH",
+    "fa": "بانک ملی ایران",
+    "en": "Bank Melli Iran",
+    "status": "merged",
+    "enabled": false,
+    "old_fa": "بانک آینده",
+    "old_en": "Ayandeh Bank",
+    "merged_into": "017",
+    "supported": false,
+    "bins": [
+      "636214"
+    ],
+    "logo": null
+  },
+  {
+    "code": "063",
+    "slug": "ANSAR",
+    "fa": "بانک سپه",
+    "en": "Sepah Bank",
+    "status": "merged",
+    "enabled": false,
+    "old_fa": "بانک انصار",
+    "old_en": "Ansar Bank",
+    "merged_into": "015",
+    "supported": false,
+    "bins": [
+      "627381"
+    ],
+    "logo": null
+  },
+  {
+    "code": "064",
+    "slug": "GARDESHGARI",
+    "fa": "بانک گردشگری",
+    "en": "Gardeshgari Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "505416",
+      "505426"
+    ],
+    "logo": "bank-gardeshgari",
+    "color": "#B11116"
+  },
+  {
+    "code": "065",
+    "slug": "HEKMAT",
+    "fa": "بانک سپه",
+    "en": "Sepah Bank",
+    "status": "merged",
+    "enabled": false,
+    "old_fa": "بانک حکمت ایرانیان",
+    "old_en": "Hekmat Iranian Bank",
+    "merged_into": "015",
+    "supported": false,
+    "bins": [
+      "636949"
+    ],
+    "logo": null
+  },
+  {
+    "code": "066",
+    "slug": "DAY",
+    "fa": "بانک دی",
+    "en": "Dey Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "502938"
+    ],
+    "logo": "bank-dey",
+    "color": "#008B9A"
+  },
+  {
+    "code": "069",
+    "slug": "IRANZAMIN",
+    "fa": "بانک ایران زمین",
+    "en": "Iran Zamin Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "505785"
+    ],
+    "logo": "bank-iranzamin",
+    "color": "#4B256D"
+  },
+  {
+    "code": "070",
+    "slug": "RESALAT",
+    "fa": "بانک رسالت",
+    "en": "Resalat Bank",
+    "status": "renamed",
+    "enabled": true,
+    "old_fa": "بانک قرض الحسنه رسالت",
+    "old_en": "Resalat Qard AL-HASAN Bank",
+    "supported": true,
+    "bins": [
+      "504172"
+    ],
+    "logo": "bank-resalat",
+    "color": "#009AAE"
+  },
+  {
+    "code": "073",
+    "slug": "KOSAR",
+    "fa": "بانک سپه",
+    "en": "Sepah Bank",
+    "status": "merged",
+    "enabled": false,
+    "old_fa": "موسسه اعتباری کوثر",
+    "old_en": "Kosar Credit Institution",
+    "merged_into": "015",
+    "supported": false,
+    "bins": [
+      "505801"
+    ],
+    "logo": null
+  },
+  {
+    "code": "075",
+    "slug": "MELAL",
+    "fa": "موسسه اعتباری ملل",
+    "en": "Mellal Credit Institution",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "606256"
+    ],
+    "logo": null,
+    "color": "#37389A"
+  },
+  {
+    "code": "078",
+    "slug": "KHAVARMIANEH",
+    "fa": "بانک خاورمیانه",
+    "en": "Middle East Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "585947"
+    ],
+    "logo": "bank-khavarmianeh",
+    "color": "#F7941E"
+  },
+  {
+    "code": "080",
+    "slug": "NOOR",
+    "fa": "بانک ملی ایران",
+    "en": "Bank Melli Iran",
+    "status": "merged",
+    "enabled": false,
+    "old_fa": "موسسه اعتباری نور",
+    "old_en": "Noor Credit Institution",
+    "merged_into": "017",
+    "supported": false,
+    "bins": [
+      "507677"
+    ],
+    "logo": null
+  },
+  {
+    "code": null,
+    "same_as": "056",
+    "slug": "BLU",
+    "fa": "بلوبانک",
+    "en": "bluBank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "manual": true,
+    "bins": [],
+    "logo": "bank-blue",
+    "color": "#2A1C21"
+  }
+]
