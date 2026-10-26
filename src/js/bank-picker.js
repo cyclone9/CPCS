@@ -5,6 +5,8 @@ import { searchBanks, keyOf } from './banks.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const AUTO = '';
+// A sparkle for «تشخیص خودکار», so its row lines up with the bank rows' logos.
+const AUTO_ICON = { viewBox: [0, 0, 24, 24], d: 'M10 3l1.9 5.1L17 10l-5.1 1.9L10 17l-1.9-5.1L3 10l5.1-1.9zM18 14l.9 2.1L21 17l-2.1.9L18 20l-.9-2.1L15 17l2.1-.9z' };
 
 /**
  * @param {{input: HTMLInputElement, list: HTMLUListElement, root: HTMLElement,
@@ -31,19 +33,19 @@ export function createBankPicker({ input, list, root, banks, loadLogo, onChange 
     const slot = document.createElement('span');
     slot.className = 'combo-logo';
     slot.setAttribute('aria-hidden', 'true');
-    if (bank?.logo) {
-      loadLogo(bank.logo).then((logo) => {
-        if (!logo) return;
-        const svg = document.createElementNS(NS, 'svg');
-        svg.setAttribute('viewBox', logo.viewBox.join(' '));
-        svg.setAttribute('focusable', 'false');
-        const path = document.createElementNS(NS, 'path');
-        path.setAttribute('d', logo.d);
-        path.setAttribute('fill', 'currentColor');
-        svg.appendChild(path);
-        slot.appendChild(svg);
-      }).catch(() => {});
-    }
+    const draw = (logo) => {
+      if (!logo) return;
+      const svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('viewBox', logo.viewBox.join(' '));
+      svg.setAttribute('focusable', 'false');
+      const path = document.createElementNS(NS, 'path');
+      path.setAttribute('d', logo.d);
+      path.setAttribute('fill', 'currentColor');
+      svg.appendChild(path);
+      slot.appendChild(svg);
+    };
+    if (!bank) draw(AUTO_ICON);
+    else if (bank.logo) loadLogo(bank.logo).then(draw).catch(() => {});
     return slot;
   }
 

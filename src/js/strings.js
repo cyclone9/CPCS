@@ -88,7 +88,7 @@ export const S = {
   // The copyright line is English and left to right (owner's exception to the Persian-only interface).
   copyrightHolder: 'CyClone',
   fullName: 'CPCS - CyClone Power Card Studio',
-  versionLabel: 'Version',
+  versionLabel: 'v',
 
   toTop: 'بازگشت به بالا',
 };

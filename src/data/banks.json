@@ -55,8 +55,8 @@
     "bins": [
       "589463"
     ],
-    "logo": null,
-    "color": "#21409A"
+    "logo": "bank-refah",
+    "color": "#173576"
   },
   {
     "code": "014",
@@ -84,7 +84,7 @@
       "589210"
     ],
     "logo": "bank-sepah",
-    "color": "#1B5FC1"
+    "color": "#E95B00"
   },
   {
     "code": "016",
@@ -276,8 +276,8 @@
     "bins": [
       "606373"
     ],
-    "logo": null,
-    "color": "#209B1C"
+    "logo": "bank-mehriran",
+    "color": "#7EC242"
   },
   {
     "code": "061",
@@ -428,7 +428,7 @@
     "bins": [
       "606256"
     ],
-    "logo": null,
+    "logo": "bank-melal",
     "color": "#37389A"
   },
   {

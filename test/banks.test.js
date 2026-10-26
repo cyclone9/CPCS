@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
 import { detectByBin, detectByIbanCode, selectable, ibanCodeOf, byCode, formerName } from '../src/js/banks.js';
 import { ibanBankCode, groupFour, toPersianDigits } from '../src/js/validate.js';
 import { assess } from '../src/js/model.js';
@@ -154,4 +155,14 @@ test('banks.json is consistent', () => {
   assert.ok(!bins.some((bin) => EXCLUDED_BINS.includes(bin)), 'excluded BINs are absent');
   assert.equal(banks.length, 32);
   assert.equal(bins.length, 43);
+});
+
+test('every bank logo has its SVG in assets/banks/', () => {
+  for (const b of banks) {
+    if (b.logo) assert.ok(existsSync(new URL(`../assets/banks/${b.logo}.svg`, import.meta.url)), b.slug);
+  }
+  const logo = (slug) => banks.find((b) => b.slug === slug).logo;
+  assert.equal(logo('REFAH'), 'bank-refah');
+  assert.equal(logo('MEHR_IRAN'), 'bank-mehriran');
+  assert.equal(logo('MELAL'), 'bank-melal');
 });

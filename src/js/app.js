@@ -317,10 +317,16 @@ async function start() {
   ui.holder.addEventListener('input', () => { ui.holder.dir = textDir(ui.holder.value); });
   // Goes through the input listeners above, so everything resets as if the text had been deleted by hand.
   for (const { input, button } of clearable) {
-    button.addEventListener('click', () => {
+    const clear = () => {
       input.value = '';
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.focus();
+    };
+    button.addEventListener('click', clear);
+    input.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || e.isComposing || !input.value) return;
+      e.preventDefault();
+      clear();
     });
   }
   ui.color.addEventListener('input', () => { customColor = ui.color.value.toUpperCase(); update(); });
