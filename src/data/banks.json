@@ -30,6 +30,20 @@
     "color": "#001B49"
   },
   {
+    "code": "011",
+    "slug": "SANAT_VA_MADAN",
+    "fa": "بانک صنعت و معدن",
+    "en": "Bank of Industry and Mine",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "627961"
+    ],
+    "logo": "bank-sanatmadan",
+    "color": "#9B814C"
+  },
+  {
     "code": "012",
     "slug": "MELLAT",
     "fa": "بانک ملت",
@@ -132,6 +146,21 @@
     "color": "#2F428D"
   },
   {
+    "code": "020",
+    "slug": "EXPORT_DEVELOPMENT",
+    "fa": "بانک توسعه صادرات ایران",
+    "en": "Export Development Bank of Iran",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "207177",
+      "627648"
+    ],
+    "logo": "bank-toseesaderat",
+    "color": "#006D08"
+  },
+  {
     "code": "021",
     "slug": "POST",
     "fa": "پست بانک ایران",
@@ -144,6 +173,28 @@
     ],
     "logo": "bank-post",
     "color": "#008840"
+  },
+  {
+    "code": "022",
+    "slug": "TOSEAH_TAAVON",
+    "fa": "بانک توسعه تعاون",
+    "en": "Tose'e Ta'avon Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "alias_codes": [
+      "051"
+    ],
+    "alias_names": [
+      "موسسه اعتباری توسعه",
+      "Tose'e Credit Institution"
+    ],
+    "bins": [
+      "502908",
+      "628157"
+    ],
+    "logo": "bank-toseetaavon",
+    "color": "#51B5D1"
   },
   {
     "code": "052",
@@ -460,6 +511,20 @@
       "507677"
     ],
     "logo": null
+  },
+  {
+    "code": "095",
+    "slug": "IRAN_VENEZUELA",
+    "fa": "بانک مشترک ایران و ونزوئلا",
+    "en": "Iran-Venezuela Bi-National Bank",
+    "status": "active",
+    "enabled": true,
+    "supported": true,
+    "bins": [
+      "581874"
+    ],
+    "logo": "bank-iranvenezuela",
+    "color": "#2E3390"
   },
   {
     "code": null,

@@ -8,9 +8,9 @@ import { banks, makeCard, makeIban } from './helpers.js';
 
 const MERGED_BINS = ['627381', '636949', '639599', '505801', '636214', '507677'];
 const MERGED_CODES = ['052', '062', '063', '065', '073', '080'];
-// Owner, 2026-10-26: dropped from the app, so these behave like an unknown BIN or IBAN code.
-const EXCLUDED_BINS = ['627961', '207177', '627648', '502908', '628157', '581874'];
-const EXCLUDED_CODES = ['011', '020', '022', '051', '095'];
+// Owner, 2026-10-26: dropped, then re-added the same day with their CPIK logos.
+const READDED = { SANAT_VA_MADAN: ['011', ['627961']], EXPORT_DEVELOPMENT: ['020', ['207177', '627648']],
+  TOSEAH_TAAVON: ['022', ['502908']], IRAN_VENEZUELA: ['095', ['581874']] };
 const base = { number: '', ibanOn: false, iban: '', manualKey: '' };
 
 test('a current bank is detected from its BIN', () => {
@@ -113,32 +113,42 @@ test('unknown BIN: valid number, but no bank and no download, even with a bank p
   assert.equal(assess(banks, { ...base, number: makeCard('621986'), manualKey: 'BLU' }).ready, true);
 });
 
-test('excluded bank BIN: unknown, no bank drawn, download disabled', () => {
-  for (const bin of EXCLUDED_BINS) {
-    assert.equal(detectByBin(banks, makeCard(bin)), null, bin);
-    const a = assess(banks, { ...base, number: makeCard(bin) });
-    assert.equal(a.card.state, 'valid', bin);
-    assert.equal(a.cardUnknown, true, bin);
-    assert.equal(a.cardUnsupported, false, bin);
-    assert.equal(a.bank, null, bin);
-    assert.equal(a.ready, false, bin);
+test('re-added banks are detected from their BINs and IBAN codes, with a logo and a colour', () => {
+  for (const [slug, [code, bins]] of Object.entries(READDED)) {
+    for (const bin of bins) {
+      const m = detectByBin(banks, makeCard(bin));
+      assert.equal(m.bank.slug, slug, bin);
+      assert.equal(m.supported, true, bin);
+      const a = assess(banks, { ...base, number: makeCard(bin), ibanOn: true, iban: makeIban(code) });
+      assert.equal(a.bank.slug, slug, bin);
+      assert.equal(a.mismatch, false, bin);
+      assert.equal(a.ready, true, bin);
+    }
+    assert.equal(detectByIbanCode(banks, code).bank.slug, slug, code);
+    assert.ok(selectable(banks).some((b) => b.slug === slug), slug);
+    const b = banks.find((x) => x.slug === slug);
+    assert.ok(b.logo, slug);
+    assert.notEqual(b.color, '#2A1C21', slug);
   }
-  assert.equal(assess(banks, { ...base, number: makeCard('627961'), manualKey: '017' }).ready, false);
 });
 
-test('excluded bank IBAN code: treated like an unknown code, never as a supported bank', () => {
-  const number = makeCard('603799');
-  const unknown = assess(banks, { ...base, number, ibanOn: true, iban: makeIban('999') });
-  for (const code of EXCLUDED_CODES) {
-    assert.equal(detectByIbanCode(banks, code), null, code);
-    const a = assess(banks, { ...base, number, ibanOn: true, iban: makeIban(code) });
-    assert.equal(a.ibanCheck.state, 'valid', code);
-    assert.equal(a.ibanMatch, null, code);
+test('Tose\'e credit institution BIN and IBAN code detect as Tose\'e Ta\'avon, fully supported', () => {
+  const number = makeCard('628157');
+  const m = detectByBin(banks, number);
+  assert.equal(m.bank.slug, 'TOSEAH_TAAVON');
+  assert.equal(m.supported, true);
+  assert.equal(m.successor, null);
+  assert.equal(detectByIbanCode(banks, '051').bank.slug, 'TOSEAH_TAAVON');
+  for (const [num, code] of [[number, '051'], [number, '022'], [makeCard('502908'), '051']]) {
+    const a = assess(banks, { ...base, number: num, ibanOn: true, iban: makeIban(code) });
+    assert.equal(a.bank.slug, 'TOSEAH_TAAVON', code);
+    assert.equal(a.ibanMatch.bank.slug, 'TOSEAH_TAAVON', code);
+    assert.equal(a.cardUnsupported, false, code);
     assert.equal(a.ibanUnsupported, false, code);
     assert.equal(a.mismatch, false, code);
-    assert.equal(a.ready, unknown.ready, code);
+    assert.equal(a.ready, true, code);
   }
-  assert.ok(!selectable(banks).some((b) => EXCLUDED_CODES.includes(b.code)));
+  assert.ok(!banks.some((b) => b.slug === 'TOSEAH' || b.code === '051'), 'no entry of its own');
 });
 
 test('banks.json is consistent', () => {
@@ -151,10 +161,8 @@ test('banks.json is consistent', () => {
     else assert.equal(b.logo, null, b.slug);
   }
   assert.deepEqual(banks.filter((b) => !b.supported).map((b) => b.code).sort(), MERGED_CODES);
-  assert.ok(!banks.some((b) => EXCLUDED_CODES.includes(b.code)), 'excluded banks are absent');
-  assert.ok(!bins.some((bin) => EXCLUDED_BINS.includes(bin)), 'excluded BINs are absent');
-  assert.equal(banks.length, 32);
-  assert.equal(bins.length, 43);
+  assert.equal(banks.length, 36);
+  assert.equal(bins.length, 49);
 });
 
 test('every bank logo has its SVG in assets/banks/', () => {

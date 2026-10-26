@@ -94,7 +94,8 @@
 
     <fieldset class="field choice">
       <legend>{{templateLabel}}</legend>
-      <label><input type="radio" name="template" value="full" checked><span>{{templateFull}}</span></label>
+      <label><input type="radio" name="template" value="gradient" checked><span>{{templateGradient}}</span></label>
+      <label><input type="radio" name="template" value="full"><span>{{templateFull}}</span></label>
       <label><input type="radio" name="template" value="band"><span>{{templateBand}}</span></label>
     </fieldset>
 
@@ -119,6 +120,7 @@
 
     <div class="actions">
       <button type="button" class="primary" id="download" disabled>{{download}}</button>
+      <button type="button" class="secondary" id="copy" hidden disabled>{{copy}}</button>
       <button type="button" class="secondary" id="share" hidden disabled>{{share}}</button>
       <p class="status" id="export-status" aria-live="polite"></p>
     </div>

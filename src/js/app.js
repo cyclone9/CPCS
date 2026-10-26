@@ -29,6 +29,7 @@ const ui = {
   smaller: $('smaller'),
   download: $('download'),
   share: $('share'),
+  copy: $('copy'),
   exportStatus: $('export-status'),
   theme: $('theme-toggle'),
   toTop: $('to-top'),
@@ -133,6 +134,7 @@ function update() {
 
   ui.download.disabled = !a.ready;
   ui.share.disabled = !a.ready;
+  ui.copy.disabled = !a.ready;
   for (const { input, button } of clearable) button.hidden = !input.value;
 
   const groups = groupFour(card.digits.padEnd(CARD_LENGTH, '•')).split(' ').map(shown);
@@ -173,7 +175,7 @@ function fileName(bank) {
 async function makePng() {
   if (png) return png;
   const [width, height] = SIZES[radio('size')];
-  ui.download.disabled = ui.share.disabled = true;
+  ui.download.disabled = ui.share.disabled = ui.copy.disabled = true;
   setStatus(ui.exportStatus, S.working);
   await new Promise((r) => requestAnimationFrame(() => setTimeout(r)));
   const seq = renderSeq;
@@ -189,7 +191,7 @@ async function makePng() {
     setStatus(ui.exportStatus, S.exportFailed, 'error');
     return null;
   } finally {
-    ui.download.disabled = ui.share.disabled = !assess(banks, readInputs()).ready;
+    ui.download.disabled = ui.share.disabled = ui.copy.disabled = !assess(banks, readInputs()).ready;
   }
 }
 
@@ -218,6 +220,39 @@ async function onShare() {
     // Encoding can outlast the click's user activation; the PNG is kept, so a second tap works.
     setStatus(ui.exportStatus, !hadPng && err?.name === 'NotAllowedError' ? S.shareRetry : S.shareFailed, 'info');
   }
+}
+
+// Safari wants the ClipboardItem made and write() called inside the click itself, so the PNG goes in as a
+// promise instead of being awaited first (Chrome 98+, Firefox 127+ and Safari 13.1+ accept a Promise<Blob>).
+function onCopy() {
+  const seq = renderSeq;
+  let noPng = false; // makePng has already said why, or the input changed under it
+  const blob = makePng().then((result) => {
+    if (!result) {
+      noPng = true;
+      throw new Error('no image');
+    }
+    return result.blob;
+  });
+  blob.catch(() => {}); // reported through write() below, even when the constructor throws first
+  let write;
+  try {
+    write = navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+  } catch (err) {
+    write = Promise.reject(err);
+  }
+  write.then(
+    () => { if (seq === renderSeq) setStatus(ui.exportStatus, S.copied, 'ok'); },
+    () => { if (!noPng && seq === renderSeq) setStatus(ui.exportStatus, S.copyFailed, 'info'); },
+  );
+}
+
+// ClipboardItem.supports() is newer than ClipboardItem (Safari 18.4); image/png is always supported where it exists.
+function canCopyImage() {
+  return window.isSecureContext
+    && typeof navigator.clipboard?.write === 'function'
+    && typeof window.ClipboardItem === 'function'
+    && (window.ClipboardItem.supports?.('image/png') ?? true);
 }
 
 function canShareFiles() {
@@ -332,6 +367,10 @@ async function start() {
   ui.color.addEventListener('input', () => { customColor = ui.color.value.toUpperCase(); update(); });
   ui.colorReset.addEventListener('click', () => { customColor = null; update(); });
   ui.download.addEventListener('click', onDownload);
+  if (canCopyImage()) {
+    ui.copy.hidden = false;
+    ui.copy.addEventListener('click', onCopy);
+  }
   if (canShareFiles()) {
     ui.share.hidden = false;
     ui.share.addEventListener('click', onShare);

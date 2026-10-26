@@ -81,7 +81,7 @@ function fit(node, maxWidth, size, minSize) {
 
 /**
  * @param {SVGSVGElement} svg
- * @param {{template: 'full'|'band', color: string, fg: string, body: string, ink: string,
+ * @param {{template: 'full'|'band'|'gradient', color: string, fg: string, body: string, ink: string,
  *   logo: {viewBox: number[], d: string}|null, bankName: string, groups: string[], iban: string|null,
  *   name: string, nameIsPlaceholder: boolean, title: string}} m
  *   fg is the text colour on m.color; body and ink are the band template's card and text colours
@@ -102,6 +102,14 @@ export function renderCard(svg, m) {
   if (band) {
     el('rect', { width: CARD_W, height: CARD_H, rx: RADIUS, fill: m.body }, svg);
     el('rect', { width: CARD_W, height: BAND_H, fill: m.color, 'clip-path': 'url(#cpcs-card-clip)' }, svg);
+  } else if (m.template === 'gradient') {
+    // Lighter where the logo sits (top right, read first in RTL), darker at the bottom left. No overlay:
+    // the arc would lift the dark corner the gradient is there to give.
+    const tones = gradientTones(m.color, m.fg);
+    const grad = el('linearGradient', { id: 'cpcs-card-gradient', gradientUnits: 'userSpaceOnUse', x1: CARD_W, y1: 0, x2: 0, y2: CARD_H }, defs);
+    el('stop', { offset: 0, 'stop-color': tones.top }, grad);
+    el('stop', { offset: 1, 'stop-color': tones.bottom }, grad);
+    el('rect', { width: CARD_W, height: CARD_H, rx: RADIUS, fill: 'url(#cpcs-card-gradient)' }, svg);
   } else {
     el('rect', { width: CARD_W, height: CARD_H, rx: RADIUS, fill: m.color }, svg);
     // The one tonal overlay: a wide arc from the lower left, a few percent of the text colour.
@@ -173,4 +181,36 @@ export function contrast(a, b) {
 /** Whichever of light and dark has the higher contrast against the card colour. */
 export function pickForeground(color, light, dark) {
   return contrast(color, light) >= contrast(color, dark) ? light : dark;
+}
+
+/** Mixes #RRGGBB toward white (amount > 0) or black (amount < 0) by |amount|, 0 to 1, in sRGB. */
+export function tone(hex, amount) {
+  const target = amount > 0 ? 255 : 0;
+  const t = Math.abs(amount);
+  return '#' + [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16);
+    return Math.round(c + (target - c) * t).toString(16).padStart(2, '0');
+  }).join('').toUpperCase();
+}
+
+// In whole percent, so the 1% steps below stay exact.
+const GRADIENT_LIGHTEN = 12;
+const GRADIENT_DARKEN = 30;
+const MIN_CONTRAST = 4.5;
+
+/**
+ * The «گرادیان» template's two ends, as #RRGGBB: top (lighter) and bottom (darker).
+ * The end that moves toward fg is pulled back in 1% steps until fg keeps 4.5:1 there, past the flat colour
+ * if it must (Melli's red already sits below 4.5:1) but never past the other end. The colour between the two
+ * ends changes monotonically, so the number in the middle reads at least as well as the worse end.
+ */
+export function gradientTones(color, fg) {
+  let top = GRADIENT_LIGHTEN;
+  let bottom = -GRADIENT_DARKEN;
+  if (luminance(fg) > luminance(color)) {
+    while (top > bottom && contrast(tone(color, top / 100), fg) < MIN_CONTRAST) top--;
+  } else {
+    while (bottom < top && contrast(tone(color, bottom / 100), fg) < MIN_CONTRAST) bottom++;
+  }
+  return { top: tone(color, top / 100), bottom: tone(color, bottom / 100) };
 }

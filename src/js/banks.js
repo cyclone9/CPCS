@@ -5,13 +5,15 @@ import { toLatinDigits } from './validate.js';
 /**
  * @typedef {{code: string|null, slug: string, fa: string, en: string, status: 'active'|'renamed'|'merged',
  *   enabled: boolean, supported: boolean, bins: string[], logo: string|null, color?: string, old_fa?: string,
- *   old_en?: string, merged_into?: string, same_as?: string, manual?: boolean}} Bank
+ *   old_en?: string, merged_into?: string, same_as?: string, manual?: boolean, alias_codes?: string[],
+ *   alias_names?: string[]}} Bank
+ *   alias_codes and alias_names belong to a bank the app treats as this one (its BINs are already in bins)
  * @typedef {{bank: Bank, supported: boolean, successor: Bank|null}} Match
  *   successor is the bank a merged bank joined; it is only named, never drawn
  */
 
 export function byCode(banks, code) {
-  return banks.find((b) => b.code === code) ?? null;
+  return banks.find((b) => b.code === code || b.alias_codes?.includes(code)) ?? null;
 }
 
 function match(banks, bank) {
@@ -86,11 +88,11 @@ export function searchBanks(list, query) {
   const hits = [];
   for (const b of list) {
     if (digits) {
-      if (ibanCodeOf(b)?.startsWith(q)) hits.push({ b, rank: 0 });
+      if ([ibanCodeOf(b), ...(b.alias_codes ?? [])].some((c) => c?.startsWith(q))) hits.push({ b, rank: 0 });
       continue;
     }
     let rank = Infinity;
-    for (const name of [b.fa, b.en]) {
+    for (const name of [b.fa, b.en, ...(b.alias_names ?? [])]) {
       const full = foldForSearch(name);
       const bare = stripPrefix(full);
       if (bare.startsWith(core)) rank = Math.min(rank, 0);

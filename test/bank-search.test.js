@@ -44,10 +44,22 @@ test('IBAN codes match in Latin, Persian and Arabic digits', () => {
   assert.deepEqual(slugs('056').sort(), ['BLU', 'SAMAN']);
 });
 
-test('banks dropped by the owner are not found by name or code', () => {
-  for (const q of ['صنعت و معدن', 'توسعه صادرات', 'توسعه تعاون', 'موسسه اعتباری توسعه', 'ونزوئلا', 'industry', 'venezuela', '011', '020', '022', '051', '095']) {
-    assert.deepEqual(slugs(q), [], q);
+test('the banks re-added on 2026-10-26 are found by name and code', () => {
+  for (const [q, slug] of [
+    ['صنعت و معدن', 'SANAT_VA_MADAN'], ['industry', 'SANAT_VA_MADAN'], ['011', 'SANAT_VA_MADAN'],
+    ['توسعه صادرات', 'EXPORT_DEVELOPMENT'], ['export', 'EXPORT_DEVELOPMENT'], ['020', 'EXPORT_DEVELOPMENT'],
+    ['توسعه تعاون', 'TOSEAH_TAAVON'], ['022', 'TOSEAH_TAAVON'],
+    ['ونزوئلا', 'IRAN_VENEZUELA'], ['venezuela', 'IRAN_VENEZUELA'], ['095', 'IRAN_VENEZUELA'],
+  ]) {
+    assert.equal(slugs(q)[0], slug, q);
   }
+});
+
+test('the Tose\'e credit institution\'s name and IBAN code find Tose\'e Ta\'avon', () => {
+  for (const q of ['051', 'موسسه اعتباری توسعه', 'اعتباری توسعه', 'Tose\'e Credit']) {
+    assert.equal(slugs(q)[0], 'TOSEAH_TAAVON', q);
+  }
+  assert.ok(!slugs('051').includes('TOSEAH'));
 });
 
 test('no match gives an empty list', () => {
