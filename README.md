@@ -26,9 +26,9 @@
 
 ## پیوندها
 
-- صفحه‌ی محصول: https://cyclone9.ir/cpcs
+- صفحه‌ی محصول: https://cyclone9.dev/cpcs
 - کد: https://github.com/cyclone9/CPCS
-- خود ابزار: https://cyclone9.github.io/CPCS/
+- خود ابزار: https://cpcs.cyclone9.dev/
 
 ## حریم خصوصی
 
