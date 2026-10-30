@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { cpckClosed, CPCK_PAUSE_MS } from '../src/js/model.js';
+import { cameFromCpck, cpckClosed, CPCK_PAUSE_MS } from '../src/js/model.js';
 import { S } from '../src/js/strings.js';
 
 const NOW = 1_800_000_000_000;
@@ -18,6 +18,18 @@ test('the banner shows again at exactly 24 hours', () => {
 test('missing, garbage or future values show the banner', () => {
   for (const stored of [null, undefined, '', ' ', 'garbage', '12abc', 'NaN', '-5', '1.5', String(NOW + 1)]) {
     assert.equal(cpckClosed(stored, NOW), false, String(stored));
+  }
+});
+
+test('a visit from the CPCK app is recognised by utm_source alone', () => {
+  assert.equal(cameFromCpck('?utm_source=cpck&utm_medium=android_app&utm_campaign=about'), true);
+  assert.equal(cameFromCpck('?utm_source=cpck'), true);
+  assert.equal(cameFromCpck('?utm_campaign=other&utm_source=cpck'), true);
+});
+
+test('other visits are not from the CPCK app', () => {
+  for (const search of ['', '?', '?utm_source=other', '?utm_source=cpck2', '?utm_source=CPCK', '?utm_source=', '?utm_medium=cpck', '?source=cpck']) {
+    assert.equal(cameFromCpck(search), false, search);
   }
 });
 

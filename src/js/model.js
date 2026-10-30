@@ -35,3 +35,8 @@ export function cpckClosed(stored, now) {
   const age = now - Number(stored);
   return age >= 0 && age < CPCK_PAUSE_MS;
 }
+
+/** Whether this visit came from the CPCK app. Only utm_source counts, so the app can change its other parameters. */
+export function cameFromCpck(search) {
+  return new URLSearchParams(search).get('utm_source') === 'cpck';
+}

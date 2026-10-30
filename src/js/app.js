@@ -2,7 +2,7 @@
 import { S } from './strings.js';
 import { digitsOnly, ibanDigits, groupFour, toPersianDigits, CARD_LENGTH, IBAN_DIGITS } from './validate.js';
 import { selectable, formerName } from './banks.js';
-import { assess, cpckClosed } from './model.js';
+import { assess, cameFromCpck, cpckClosed } from './model.js';
 import { renderCard, loadLogo, pickForeground } from './card.js';
 import { exportPng } from './export.js';
 import { createBankPicker } from './bank-picker.js';
@@ -287,15 +287,19 @@ function setupTheme() {
   label();
 }
 
-// Only the time the banner was closed is stored.
+// Only the time the banner was closed and whether the visitor has the app are stored.
 function setupCpck() {
+  const fromApp = cameFromCpck(location.search);
+  let hasApp = fromApp;
   let stored = null;
   try {
+    if (fromApp) localStorage.setItem('cpcs-has-cpck', '1');
+    else hasApp = localStorage.getItem('cpcs-has-cpck') === '1';
     stored = localStorage.getItem('cpcs-cpck-closed');
   } catch {
-    // Storage blocked: show it.
+    // Storage blocked: show it, unless this URL came from the app.
   }
-  if (!cpckClosed(stored, Date.now())) ui.cpck.hidden = false;
+  if (!hasApp && !cpckClosed(stored, Date.now())) ui.cpck.hidden = false;
   ui.cpckClose.addEventListener('click', () => {
     ui.cpck.hidden = true;
     try {
