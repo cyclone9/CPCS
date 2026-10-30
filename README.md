@@ -4,7 +4,7 @@
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/logo/cpcs-lockup-fa-on-dark.svg"><img src="assets/logo/cpcs-lockup-fa-on-light.svg" alt="CPCS" width="300"></picture></p>
 
-نسخه‌ی 0.6.0. تغییرات را در [CHANGELOG.md](CHANGELOG.md) ببینید.
+نسخه‌ی 0.6.1. تغییرات را در [CHANGELOG.md](CHANGELOG.md) ببینید.
 
 **شماره‌ی کارت می‌دهید، تصویر کارت می‌گیرید.**
 

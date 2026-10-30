@@ -49,6 +49,15 @@ export function selectable(banks) {
   return banks.filter((b) => b.supported).sort((a, b) => collator.compare(a.fa, b.fa));
 }
 
+/**
+ * The bluBank entry when this card may show bluBank's name and mark, else null. Its cards carry Saman's BIN,
+ * so the number can't tell them apart and the person ticks it. bank is the one that would be drawn.
+ */
+export function bluBankOf(banks, bank, digits) {
+  if (bank?.slug !== 'SAMAN' || !digits.startsWith('621986')) return null;
+  return banks.find((b) => b.slug === 'BLU') ?? null;
+}
+
 /** The code a bank answers to in an IBAN (bluBank uses Saman's). */
 export function ibanCodeOf(bank) {
   return bank?.same_as ?? bank?.code ?? null;

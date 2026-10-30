@@ -2,7 +2,7 @@
 import { S } from './strings.js';
 import { digitsOnly, ibanDigits, groupFour, toPersianDigits, CARD_LENGTH, IBAN_DIGITS } from './validate.js';
 import { selectable, formerName } from './banks.js';
-import { assess, cameFromCpck, cpckClosed } from './model.js';
+import { assess, cameFromCpck, cpckClosed, parseChoices } from './model.js';
 import { renderCard, loadLogo, pickForeground } from './card.js';
 import { exportPng } from './export.js';
 import { createBankPicker } from './bank-picker.js';
@@ -18,6 +18,8 @@ const ui = {
   bankList: $('bank-list'),
   bankCombo: $('bank-combo'),
   bankStatus: $('bank-status'),
+  bluBank: $('blubank'),
+  bluBankRow: $('blubank-row'),
   holder: $('holder'),
   ibanOn: $('iban-on'),
   ibanBox: $('iban-box'),
@@ -97,6 +99,9 @@ function readInputs() {
   return { number: ui.number.value, ibanOn: ui.ibanOn.checked, iban: ui.iban.value, manualKey: picker?.key() ?? '' };
 }
 
+// The bank on the image. The status text and the bank field keep following a.bank.
+const imageBank = (a) => (a.bluBank && ui.bluBank.checked ? a.bluBank : a.bank);
+
 function update() {
   png = null;
   setStatus(ui.exportStatus, '');
@@ -116,6 +121,11 @@ function update() {
   else setStatus(ui.bankStatus, '');
 
   picker.setDetected(cardMatch?.supported ? cardMatch.bank : null);
+
+  ui.bluBankRow.hidden = !a.bluBank;
+  if (!a.bluBank) ui.bluBank.checked = false;
+  // Fetched ahead: a download right after the first tick must not carry Saman's mark under bluBank's file name.
+  else loadLogo(a.bluBank.logo).catch(() => {});
 
   ui.ibanBox.hidden = !ui.ibanOn.checked;
   setStatus(ui.ibanMatch, '');
@@ -148,8 +158,8 @@ function update() {
     body: WHITE,
     ink: INK,
     fg: pickForeground(color, WHITE, INK),
-    logoName: bank?.logo ?? null,
-    bankName: bank?.fa ?? '',
+    logoName: imageBank(a)?.logo ?? null,
+    bankName: imageBank(a)?.fa ?? '',
     groups,
     iban: ibanText,
     name: holder || S.nameOnCard,
@@ -183,9 +193,9 @@ async function makePng() {
   const seq = renderSeq;
   try {
     const blob = await exportPng(ui.card, { width, height, smaller: ui.smaller.checked });
-    const { bank, ready } = assess(banks, readInputs());
-    if (!ready) return null;
-    const result = { blob, name: fileName(bank) };
+    const a = assess(banks, readInputs());
+    if (!a.ready) return null;
+    const result = { blob, name: fileName(imageBank(a)) };
     if (seq === renderSeq) png = result;
     setStatus(ui.exportStatus, S.fileSize(toPersianDigits(Math.round(blob.size / 1024).toLocaleString('en-US').replace(/,/g, '٬'))), 'ok');
     return result;
@@ -310,6 +320,37 @@ function setupCpck() {
   });
 }
 
+const CHOICE_RADIOS = ['digits', 'template', 'size'];
+
+function saveChoices() {
+  const choices = { smaller: ui.smaller.checked };
+  for (const name of CHOICE_RADIOS) choices[name] = radio(name);
+  try {
+    localStorage.setItem('cpcs-choices', JSON.stringify(choices));
+  } catch {
+    // Storage blocked: the defaults come back on the next visit.
+  }
+}
+
+// Only these four settings are stored: never the number, the IBAN or its switch, the name, the bank or the colour.
+function setupChoices() {
+  const radios = (name) => [...document.querySelectorAll(`input[name="${name}"]`)];
+  const allowed = { smaller: [true, false] };
+  for (const name of CHOICE_RADIOS) allowed[name] = radios(name).map((input) => input.value);
+  let raw = null;
+  try {
+    raw = localStorage.getItem('cpcs-choices');
+  } catch {
+    // Storage blocked: keep the defaults.
+  }
+  const choices = parseChoices(raw, allowed);
+  for (const name of CHOICE_RADIOS) {
+    if (name in choices) radios(name).find((input) => input.value === choices[name]).checked = true;
+  }
+  if ('smaller' in choices) ui.smaller.checked = choices.smaller;
+  for (const node of [ui.smaller, ...CHOICE_RADIOS.flatMap(radios)]) node.addEventListener('change', saveChoices);
+}
+
 // An empty dir="auto" field resolves to LTR, which puts the Persian placeholder on the left; decide here instead.
 function textDir(value) {
   const strong = value.match(/[A-Za-z\u00C0-\u024F\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFC]/);
@@ -361,6 +402,7 @@ async function start() {
   $('copyright-years').textContent = yearRange(new Date().getFullYear());
   setupTheme();
   setupCpck();
+  setupChoices();
   setupToTop();
   const fa = (n) => toPersianDigits(String(n));
   $('size-1').textContent = S.size1x(fa(SIZES[1][0]), fa(SIZES[1][1]));
@@ -372,7 +414,7 @@ async function start() {
 
   ui.number.addEventListener('input', (e) => { reformat(ui.number, cardExtract, cardFormat, e); update(); });
   ui.iban.addEventListener('input', (e) => { reformat(ui.iban, ibanExtract, ibanFormat, e); update(); });
-  for (const node of [ui.holder, ui.ibanOn, ui.smaller, ...document.querySelectorAll('input[name="template"], input[name="digits"], input[name="size"]')]) {
+  for (const node of [ui.holder, ui.ibanOn, ui.smaller, ui.bluBank, ...document.querySelectorAll('input[name="template"], input[name="digits"], input[name="size"]')]) {
     node.addEventListener(node === ui.holder ? 'input' : 'change', update);
   }
   ui.holder.addEventListener('input', () => { ui.holder.dir = textDir(ui.holder.value); });

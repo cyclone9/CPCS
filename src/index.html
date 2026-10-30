@@ -65,6 +65,7 @@
         <ul class="combo-list" id="bank-list" role="listbox" aria-labelledby="bank-label" hidden></ul>
       </div>
       <p class="status" id="bank-status" aria-live="polite"></p>
+      <label class="check" id="blubank-row" hidden><input type="checkbox" id="blubank"><span>{{bluBankToggle}}</span></label>
     </div>
 
     <div class="field">
@@ -90,8 +91,8 @@
 
     <fieldset class="field choice">
       <legend>{{digitsLabel}}</legend>
-      <label><input type="radio" name="digits" value="fa" checked><span>{{digitsFa}}</span></label>
-      <label><input type="radio" name="digits" value="en"><span>{{digitsEn}}</span></label>
+      <label><input type="radio" name="digits" value="fa"><span>{{digitsFa}}</span></label>
+      <label><input type="radio" name="digits" value="en" checked><span>{{digitsEn}}</span></label>
     </fieldset>
 
     <fieldset class="field choice">
@@ -155,7 +156,7 @@
 
 <footer class="bottom">
   <p class="motto">{{motto}}</p>
-  <p class="links"><a href="https://cyclone9.dev/cpcs" rel="noopener">{{productLink}}</a> · <a href="https://github.com/cyclone9/CPCS" rel="noopener">{{codeLink}}</a></p>
+  <p class="links"><a href="https://cyclone9.dev/cpcs" rel="noopener">{{productLink}}</a> · <a href="https://github.com/cyclone9/CPCS" rel="noopener">{{codeLink}}</a> · <a href="https://cafebazaar.ir/app/ir.cyclone9.cpck" target="_blank" rel="noopener noreferrer">{{cpckStoreLink}}</a></p>
   <p class="copyright" dir="ltr" lang="en"><span class="part">© <span id="copyright-years">{{startYear}}</span> {{copyrightHolder}}</span><span class="sep" aria-hidden="true"> · </span><span class="part">{{fullName}}</span><span class="part version">{{versionLabel}}{{version}}</span></p>
 </footer>
 

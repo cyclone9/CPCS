@@ -30,6 +30,7 @@ export const S = {
   bankAutoDetected: (bank) => `تشخیص خودکار: ${bank}`,
   bankSearchPlaceholder: 'نام بانک را بنویسید',
   bankNone: 'بانکی پیدا نشد',
+  bluBankToggle: 'بلوبانک',
   bankUnknown: 'بانک این کارت شناخته نشد. استودیو کارت فقط برای کارت بانک‌های فعال تصویر می‌سازد.',
   // current is null for a bank that was dissolved rather than merged.
   cardUnsupported: (oldName, current) => (current
@@ -93,6 +94,7 @@ export const S = {
   cpckAlt: 'کارت‌دان: شماره‌ی کارت و شبا، دم دست. اندروید · کافه‌بازار',
   productLink: 'صفحه‌ی محصول',
   codeLink: 'کد',
+  cpckStoreLink: 'کارت‌دان در کافه‌بازار',
   // The copyright line is English and left to right (owner's exception to the Persian-only interface).
   copyrightHolder: 'CyClone',
   fullName: 'CPCS - CyClone Power Card Studio',

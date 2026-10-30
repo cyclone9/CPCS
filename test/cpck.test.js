@@ -21,14 +21,14 @@ test('missing, garbage or future values show the banner', () => {
   }
 });
 
-test('a visit from the CPCK app is recognised by utm_source alone', () => {
-  assert.equal(cameFromCpck('?utm_source=cpck&utm_medium=android_app&utm_campaign=about'), true);
-  assert.equal(cameFromCpck('?utm_source=cpck'), true);
-  assert.equal(cameFromCpck('?utm_campaign=other&utm_source=cpck'), true);
+test('a visit from the CPCK app is recognised by utm_source and utm_medium', () => {
+  assert.equal(cameFromCpck('?utm_source=cpck&utm_medium=android_app&utm_campaign=about&utm_content=cpcs_tool'), true);
+  assert.equal(cameFromCpck('?utm_source=cpck&utm_medium=android_app'), true);
+  assert.equal(cameFromCpck('?utm_campaign=other&utm_medium=android_app&utm_source=cpck'), true);
 });
 
 test('other visits are not from the CPCK app', () => {
-  for (const search of ['', '?', '?utm_source=other', '?utm_source=cpck2', '?utm_source=CPCK', '?utm_source=', '?utm_medium=cpck', '?source=cpck']) {
+  for (const search of ['', '?', '?utm_source=other', '?utm_source=cpck', '?utm_source=cpck&utm_medium=social', '?utm_source=cpck2&utm_medium=android_app', '?utm_source=CPCK&utm_medium=android_app', '?utm_medium=android_app', '?utm_source=&utm_medium=android_app', '?source=cpck&medium=android_app']) {
     assert.equal(cameFromCpck(search), false, search);
   }
 });
