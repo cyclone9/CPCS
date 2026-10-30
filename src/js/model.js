@@ -26,3 +26,12 @@ export function assess(banks, { number, ibanOn, iban, manualKey }) {
 
   return { card, cardMatch, cardUnsupported, cardUnknown, bank, ibanCheck, ibanMatch, ibanUnsupported, mismatch, ready };
 }
+
+export const CPCK_PAUSE_MS = 24 * 60 * 60 * 1000;
+
+/** Whether the CPCK banner stays closed. A future timestamp (clock moved back) doesn't count, so it can't hide the banner for good. */
+export function cpckClosed(stored, now) {
+  if (!/^\d+$/.test(stored)) return false;
+  const age = now - Number(stored);
+  return age >= 0 && age < CPCK_PAUSE_MS;
+}

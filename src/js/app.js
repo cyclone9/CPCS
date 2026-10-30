@@ -2,7 +2,7 @@
 import { S } from './strings.js';
 import { digitsOnly, ibanDigits, groupFour, toPersianDigits, CARD_LENGTH, IBAN_DIGITS } from './validate.js';
 import { selectable, formerName } from './banks.js';
-import { assess } from './model.js';
+import { assess, cpckClosed } from './model.js';
 import { renderCard, loadLogo, pickForeground } from './card.js';
 import { exportPng } from './export.js';
 import { createBankPicker } from './bank-picker.js';
@@ -32,6 +32,8 @@ const ui = {
   copy: $('copy'),
   exportStatus: $('export-status'),
   theme: $('theme-toggle'),
+  cpck: $('cpck'),
+  cpckClose: $('cpck-close'),
   toTop: $('to-top'),
   top: $('top'),
 };
@@ -285,6 +287,25 @@ function setupTheme() {
   label();
 }
 
+// Only the time the banner was closed is stored.
+function setupCpck() {
+  let stored = null;
+  try {
+    stored = localStorage.getItem('cpcs-cpck-closed');
+  } catch {
+    // Storage blocked: show it.
+  }
+  if (!cpckClosed(stored, Date.now())) ui.cpck.hidden = false;
+  ui.cpckClose.addEventListener('click', () => {
+    ui.cpck.hidden = true;
+    try {
+      localStorage.setItem('cpcs-cpck-closed', String(Date.now()));
+    } catch {
+      // Storage blocked: it stays closed for this page only.
+    }
+  });
+}
+
 // An empty dir="auto" field resolves to LTR, which puts the Persian placeholder on the left; decide here instead.
 function textDir(value) {
   const strong = value.match(/[A-Za-z\u00C0-\u024F\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFC]/);
@@ -293,7 +314,7 @@ function textDir(value) {
 
 function setupToTop() {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  const controls = () => document.querySelectorAll('main input, main select, main button, .bottom a');
+  const controls = () => document.querySelectorAll('main input, main select, main button, main a, .bottom a');
   const GAP = 8;
   let queued = false;
 
@@ -335,6 +356,7 @@ function setupToTop() {
 async function start() {
   $('copyright-years').textContent = yearRange(new Date().getFullYear());
   setupTheme();
+  setupCpck();
   setupToTop();
   const fa = (n) => toPersianDigits(String(n));
   $('size-1').textContent = S.size1x(fa(SIZES[1][0]), fa(SIZES[1][1]));

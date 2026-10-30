@@ -27,6 +27,8 @@ The MIT License above covers the source code of CPCS. It does not cover:
 - the CPCS name and the CPCS logos and icons (the files in assets/logo/ and
   assets/favicon/), which belong to CyClone and may not be used to identify
   another product;
+- the CPCK name, logo and banners (the files in assets/cpck/), which belong to
+  CyClone and may not be used to identify another product;
 - the bank logos in assets/banks/, which are the trademarks of their owners.
 
 Vazirmatn (assets/fonts/) is under the SIL Open Font License; see

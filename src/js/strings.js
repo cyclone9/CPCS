@@ -87,6 +87,10 @@ export const S = {
 
   privacy: 'همه‌چیز در همین مرورگر ساخته می‌شود. شماره، نام و تصویر به هیچ سروری فرستاده و جایی ذخیره نمی‌شود.',
   logosNotice: 'نشان هر بانک، علامت تجاری خود آن بانک است.',
+  cpckLabel: 'تبلیغ کارت‌دان',
+  cpckClose: 'بستن بنر',
+  // The tagline part is word for word from CPBS cpck/brand.json text.fa.tagline; never edit here, copy from there.
+  cpckAlt: 'کارت‌دان: شماره‌ی کارت و شبا، دم دست. اندروید · کافه‌بازار',
   productLink: 'صفحه‌ی محصول',
   codeLink: 'کد',
   // The copyright line is English and left to right (owner's exception to the Persian-only interface).

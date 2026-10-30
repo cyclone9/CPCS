@@ -41,9 +41,11 @@
 
 <main class="page">
 <div class="studio">
-  <section class="preview" aria-label="{{previewLabel}}">
-    <svg id="card" class="card" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 856 540" role="img"></svg>
-  </section>
+  <div class="preview-col">
+    <section class="preview" aria-label="{{previewLabel}}">
+      <svg id="card" class="card" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 856 540" role="img"></svg>
+    </section>
+  </div>
 
   <form class="editor" id="editor" novalidate autocomplete="off">
     <div class="field">
@@ -125,6 +127,18 @@
       <p class="status" id="export-status" aria-live="polite"></p>
     </div>
   </form>
+
+  <aside class="cpck" id="cpck" aria-label="{{cpckLabel}}" hidden>
+    <a href="https://cafebazaar.ir/app/ir.cyclone9.cpck" target="_blank" rel="noopener noreferrer">
+      <picture>
+        <source media="(min-width: 1024px)" srcset="assets/cpck/cpck-970by90.png">
+        <source media="(min-width: 700px)" srcset="assets/cpck/cpck-728by90.png">
+        <source media="(min-width: 480px)" srcset="assets/cpck/cpck-468by60.png">
+        <img src="assets/cpck/cpck-320by100.png" alt="{{cpckAlt}}" decoding="async">
+      </picture>
+    </a>
+    <button type="button" class="cpck-close" id="cpck-close" aria-label="{{cpckClose}}" title="{{cpckClose}}"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </aside>
 </div>
 
   <div class="notices">
