@@ -12,7 +12,7 @@
 
 <p align="center"><img src="media/cpcs-video-fa.gif" alt="ویدیوی استودیو کارت" width="720"></p>
 
-<p align="center" dir="rtl">نگاهی ۳۲ ثانیه‌ای به استودیو کارت. <a href="media/cpcs-video-fa.mp4?raw=true">دانلود ویدیو (MP4، ۲ مگابایت)</a></p>
+<p align="center" dir="rtl">نگاهی ۳۷ ثانیه‌ای به استودیو کارت. <a href="media/cpcs-video-fa.mp4?raw=true">دانلود ویدیو (MP4، ۲ مگابایت)</a></p>
 
 ## امکانات
 
