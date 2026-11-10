@@ -111,6 +111,11 @@ export function wrapLines(content, maxWidth, maxLines, measure) {
 // After one line at the bank name's size: two lines, then three.
 const WRAP_STEPS = [[2, 26], [3, 22]];
 const LINE_HEIGHT = 1.25;
+// Lines break against this share of the room, about a word short of touching the bank name, and never run
+// longer than WRAP_MAX even beside a short bank name (owner, 2026-11-10). A line is only shrunk when it
+// overflows the whole room.
+const WRAP_SHARE = 0.8;
+const WRAP_MAX = 260;
 
 /** The shop name, left-aligned at x, wrapped to fit the logo row and centred on centreY. */
 function shopName(parent, content, x, maxWidth, size, centreY, fill) {
@@ -121,14 +126,15 @@ function shopName(parent, content, x, maxWidth, size, centreY, fill) {
     probe.textContent = line;
     return probe.getComputedTextLength();
   };
+  const wrapWidth = Math.min(maxWidth * WRAP_SHARE, WRAP_MAX);
   let lineSize = size;
   probe.setAttribute('font-size', size);
-  let { lines, fits } = wrapLines(content, maxWidth, 1, measure);
+  let { lines, fits } = wrapLines(content, wrapWidth, 1, measure);
   for (const [count, stepSize] of WRAP_STEPS) {
     if (fits) break;
     lineSize = stepSize;
     probe.setAttribute('font-size', stepSize);
-    ({ lines, fits } = wrapLines(content, maxWidth, count, measure));
+    ({ lines, fits } = wrapLines(content, wrapWidth, count, measure));
   }
   probe.remove();
   const step = lineSize * LINE_HEIGHT;
