@@ -8,7 +8,7 @@ const FONTS = [
 
 let fontCss = null;
 
-function base64(buffer) {
+export function base64(buffer) {
   const bytes = new Uint8Array(buffer);
   let bin = '';
   for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));

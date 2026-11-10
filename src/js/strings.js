@@ -50,9 +50,19 @@ export const S = {
   clearIban: 'پاک کردن شماره‌ی شبا',
   ibanMismatch: (ibanBank, cardBank) => `بانک شماره‌ی شبا («${ibanBank}») با بانک کارت («${cardBank}») یکی نیست.`,
 
+  shopToggle: 'لوگو و نام فروشگاه',
+  shopLogoPick: 'انتخاب لوگو',
+  shopLogoRemove: 'حذف لوگو',
+  shopLogoHint: 'فقط PNG یا SVG. لوگو هم‌اندازه‌ی نشان بانک، بالا و سمت چپ کارت می‌نشیند.',
+  shopLogoBadType: 'فقط فایل PNG یا SVG پذیرفته می‌شود.',
+  shopLogoTooBig: 'حجم لوگو باید کمتر از ۵ مگابایت باشد.',
+  shopLogoBroken: 'این فایل خوانده نشد. فایل PNG یا SVG دیگری انتخاب کنید.',
+  shopNameLabel: 'نام فروشگاه',
+  shopNamePlaceholder: 'نام فروشگاه',
+  clearShopName: 'پاک کردن نام فروشگاه',
+
   nameLabel: 'نام صاحب کارت',
   namePlaceholder: 'نام و نام خانوادگی',
-  nameOnCard: 'نام صاحب کارت',
   clearHolder: 'پاک کردن نام صاحب کارت',
 
   digitsLabel: 'رقم‌های روی کارت',
@@ -98,7 +108,7 @@ export const S = {
   // The copyright line is English and left to right (owner's exception to the Persian-only interface).
   copyrightHolder: 'CyClone',
   fullName: 'CPCS - CyClone Power Card Studio',
-  versionLabel: 'v',
+  versionLabel: 'Version ',
 
   toTop: 'بازگشت به بالا',
 };

@@ -14,6 +14,9 @@ const LOGO_MAX_W = 220;
 // The «نواری» template: a light card with the colour as a band across the top, the logo centred in it.
 const BAND_H = 162;
 const BAND_LOGO_TOP = (BAND_H - LOGO_MAX_H) / 2;
+const LOGO_GAP = 22;
+// Between the bank name and the shop name when the logo row carries both.
+const NAMES_GAP = 28;
 
 const logoCache = new Map();
 
@@ -50,10 +53,15 @@ function text(parent, content, attrs) {
 
 const RTL_CHARS = /[֐-ࣿיִ-﷿ﹰ-﻿]/;
 
+/** Whether text's base direction is right to left: its first strong character, Persian or Latin. */
+function isRtl(content) {
+  const firstStrong = content.match(/[A-Za-zÀ-ɏ֐-ࣿיִ-﷿ﹰ-﻿]/)?.[0] ?? '';
+  return RTL_CHARS.test(firstStrong) || (!firstStrong && RTL_CHARS.test(content));
+}
+
 /** Right-aligned text whose base direction follows its first strong character, Persian or Latin. */
 function rightAligned(parent, content, x, attrs) {
-  const firstStrong = content.match(/[A-Za-zÀ-ɏ֐-ࣿיִ-﷿ﹰ-﻿]/)?.[0] ?? '';
-  const rtl = RTL_CHARS.test(firstStrong) || (!firstStrong && RTL_CHARS.test(content));
+  const rtl = isRtl(content);
   // With direction="rtl", text-anchor "start" is the right end; with "ltr", "end" is.
   return text(parent, content, {
     x,
@@ -61,6 +69,72 @@ function rightAligned(parent, content, x, attrs) {
     'unicode-bidi': 'embed',
     'text-anchor': rtl ? 'start' : 'end',
     ...attrs,
+  });
+}
+
+/** Left-aligned counterpart of rightAligned; rtl is passed in so every line of a wrapped name agrees. */
+function leftAligned(parent, content, x, rtl, attrs) {
+  return text(parent, content, {
+    x,
+    direction: rtl ? 'rtl' : 'ltr',
+    'unicode-bidi': 'embed',
+    'text-anchor': rtl ? 'end' : 'start',
+    ...attrs,
+  });
+}
+
+/**
+ * Greedy word wrap into at most maxLines lines. Words past the last line join it, and a word wider than
+ * maxWidth gets a line of its own; either way fits is false and the caller shrinks what doesn't fit.
+ * @param {(line: string) => number} measure width of a line
+ * @returns {{lines: string[], fits: boolean}}
+ */
+export function wrapLines(content, maxWidth, maxLines, measure) {
+  const lines = [];
+  let fits = true;
+  for (const word of content.split(/\s+/).filter(Boolean)) {
+    const joined = lines.length ? `${lines[lines.length - 1]} ${word}` : null;
+    if (joined !== null && measure(joined) <= maxWidth) {
+      lines[lines.length - 1] = joined;
+    } else {
+      lines.push(word);
+      if (measure(word) > maxWidth) fits = false;
+    }
+  }
+  if (lines.length > maxLines) {
+    fits = false;
+    lines.push(lines.splice(maxLines - 1).join(' '));
+  }
+  return { lines, fits };
+}
+
+// After one line at the bank name's size: two lines, then three.
+const WRAP_STEPS = [[2, 26], [3, 22]];
+const LINE_HEIGHT = 1.25;
+
+/** The shop name, left-aligned at x, wrapped to fit the logo row and centred on centreY. */
+function shopName(parent, content, x, maxWidth, size, centreY, fill) {
+  const rtl = isRtl(content);
+  const attrs = { 'dominant-baseline': 'central', 'font-weight': 700, fill };
+  const probe = leftAligned(parent, '', x, rtl, attrs);
+  const measure = (line) => {
+    probe.textContent = line;
+    return probe.getComputedTextLength();
+  };
+  let lineSize = size;
+  probe.setAttribute('font-size', size);
+  let { lines, fits } = wrapLines(content, maxWidth, 1, measure);
+  for (const [count, stepSize] of WRAP_STEPS) {
+    if (fits) break;
+    lineSize = stepSize;
+    probe.setAttribute('font-size', stepSize);
+    ({ lines, fits } = wrapLines(content, maxWidth, count, measure));
+  }
+  probe.remove();
+  const step = lineSize * LINE_HEIGHT;
+  lines.forEach((line, i) => {
+    const node = leftAligned(parent, line, x, rtl, { y: centreY + (i - (lines.length - 1) / 2) * step, ...attrs });
+    fit(node, maxWidth, lineSize, 16);
   });
 }
 
@@ -83,8 +157,10 @@ function fit(node, maxWidth, size, minSize) {
  * @param {SVGSVGElement} svg
  * @param {{template: 'full'|'band'|'gradient', color: string, fg: string, body: string, ink: string,
  *   logo: {viewBox: number[], d: string}|null, bankName: string, groups: string[], iban: string|null,
- *   name: string, nameIsPlaceholder: boolean, title: string}} m
- *   fg is the text colour on m.color; body and ink are the band template's card and text colours
+ *   name: string, title: string,
+ *   shop: {name: string, logo: {href: string, width: number, height: number}|null}|null}} m
+ *   fg is the text colour on m.color; body and ink are the band template's card and text colours.
+ *   An empty name draws nothing. The shop sits top left, opposite the bank; shop.logo.href is a data: URL.
  */
 export function renderCard(svg, m) {
   svg.replaceChildren();
@@ -117,9 +193,8 @@ export function renderCard(svg, m) {
   }
 
   const logoTop = band ? BAND_LOGO_TOP : LOGO_TOP;
+  const rowY = logoTop + LOGO_MAX_H / 2;
   let nameRight = RIGHT;
-  let nameMax = CARD_W - 2 * PAD;
-  let nameY = logoTop + LOGO_MAX_H / 2;
   let nameSize = 38;
   if (m.logo) {
     const [vx, vy, vw, vh] = m.logo.viewBox;
@@ -127,14 +202,37 @@ export function renderCard(svg, m) {
     const h = (w * vh) / vw;
     const logo = el('svg', { x: RIGHT - w, y: logoTop + (LOGO_MAX_H - h) / 2, width: w, height: h, viewBox: `${vx} ${vy} ${vw} ${vh}` }, svg);
     el('path', { d: m.logo.d, fill: m.fg }, logo);
-    nameRight = RIGHT - w - 22;
-    nameMax = nameRight - PAD;
+    nameRight = RIGHT - w - LOGO_GAP;
     nameSize = 30;
   }
-  if (m.bankName) {
-    const bank = rightAligned(svg, m.bankName, nameRight, { y: nameY, 'dominant-baseline': 'central', 'font-weight': 700, fill: m.fg });
-    fit(bank, nameMax, nameSize, 18);
+
+  // The shop's logo mirrors the bank's box on the left, in its own colours.
+  let rowLeft = PAD;
+  if (m.shop?.logo) {
+    const { href, width, height } = m.shop.logo;
+    const w = Math.min(LOGO_MAX_W, (LOGO_MAX_H * width) / height);
+    const h = (w * height) / width;
+    el('image', { href, x: PAD, y: logoTop + (LOGO_MAX_H - h) / 2, width: w, height: h, preserveAspectRatio: 'xMidYMid meet' }, svg);
+    rowLeft = PAD + w + LOGO_GAP;
   }
+
+  // The two names share the span between the logos. The bank name keeps its width unless that would leave
+  // the shop name under 40% of it; the shop name gets whatever the bank name doesn't use.
+  const span = nameRight - rowLeft;
+  const shop = m.shop?.name ?? '';
+  const room = shop && m.bankName ? span - NAMES_GAP : span;
+  let bankWidth = 0;
+  if (m.bankName) {
+    const bank = rightAligned(svg, m.bankName, nameRight, { y: rowY, 'dominant-baseline': 'central', 'font-weight': 700, fill: m.fg });
+    let bankMax = room;
+    if (shop) {
+      bank.setAttribute('font-size', nameSize);
+      if (room - bank.getComputedTextLength() < 0.4 * room) bankMax = 0.6 * room;
+    }
+    fit(bank, bankMax, nameSize, 18);
+    if (shop) bankWidth = Math.min(bank.getComputedTextLength(), bankMax);
+  }
+  if (shop) shopName(svg, shop, rowLeft, room - bankWidth, nameSize, rowY, m.fg);
 
   const numberY = m.iban ? 288 : 304;
   const step = 186;
@@ -155,8 +253,10 @@ export function renderCard(svg, m) {
     fit(iban, CARD_W - 2 * PAD, 30, 20);
   }
 
-  const name = rightAligned(svg, m.name, RIGHT, { y: 474, 'font-weight': 500, fill: bodyFg, 'fill-opacity': m.nameIsPlaceholder ? 0.5 : 1 });
-  fit(name, CARD_W - 2 * PAD, 36, 20);
+  if (m.name) {
+    const name = rightAligned(svg, m.name, RIGHT, { y: 474, 'font-weight': 500, fill: bodyFg });
+    fit(name, CARD_W - 2 * PAD, 36, 20);
+  }
 
   // Drawn last and inset half a stroke, so the light card keeps its edge on a light page and in the PNG.
   if (band) {

@@ -5,6 +5,7 @@ import { selectable, formerName } from './banks.js';
 import { assess, cameFromCpck, cpckClosed, parseChoices } from './model.js';
 import { renderCard, loadLogo, pickForeground } from './card.js';
 import { exportPng } from './export.js';
+import { readShopLogo } from './shop-logo.js';
 import { createBankPicker } from './bank-picker.js';
 import { yearRange } from './years.js';
 
@@ -26,6 +27,12 @@ const ui = {
   iban: $('iban'),
   ibanStatus: $('iban-status'),
   ibanMatch: $('iban-match'),
+  shopOn: $('shop-on'),
+  shopBox: $('shop-box'),
+  shopLogo: $('shop-logo'),
+  shopLogoRemove: $('shop-logo-remove'),
+  shopLogoStatus: $('shop-logo-status'),
+  shopName: $('shop-name'),
   color: $('color'),
   colorReset: $('color-reset'),
   smaller: $('smaller'),
@@ -40,7 +47,7 @@ const ui = {
   top: $('top'),
 };
 
-const clearable = [ui.number, ui.holder, ui.iban].map((input) => ({ input, button: $(`${input.id}-clear`) }));
+const clearable = [ui.number, ui.holder, ui.iban, ui.shopName].map((input) => ({ input, button: $(`${input.id}-clear`) }));
 
 const SIZES = { 1: [1080, 681], 2: [2160, 1362] };
 
@@ -53,6 +60,8 @@ let banks = [];
 let picker = null;
 let customColor = null;
 let png = null; // {blob, name} for the current state; dropped on every change
+let shopLogo = null; // {href, width, height} from readShopLogo; like the name, never stored
+let shopLogoSeq = 0;
 let renderSeq = 0;
 
 function setStatus(node, message, tone = '') {
@@ -128,6 +137,8 @@ function update() {
   else loadLogo(a.bluBank.logo).catch(() => {});
 
   ui.ibanBox.hidden = !ui.ibanOn.checked;
+  ui.shopBox.hidden = !ui.shopOn.checked;
+  ui.shopLogoRemove.hidden = !shopLogo;
   setStatus(ui.ibanMatch, '');
   if (a.ibanCheck) {
     const { state, iban } = a.ibanCheck;
@@ -152,6 +163,8 @@ function update() {
   const groups = groupFour(card.digits.padEnd(CARD_LENGTH, '•')).split(' ').map(shown);
   const ibanText = a.ibanCheck ? shown(groupFour('IR' + ibanDigits(ui.iban.value).padEnd(IBAN_DIGITS, '•'))) : null;
   const holder = ui.holder.value.trim().replace(/\s+/g, ' ');
+  const shopName = ui.shopName.value.trim().replace(/\s+/g, ' ');
+  const shop = ui.shopOn.checked && (shopName || shopLogo) ? { name: shopName, logo: shopLogo } : null;
   draw({
     template: radio('template'),
     color,
@@ -162,9 +175,9 @@ function update() {
     bankName: imageBank(a)?.fa ?? '',
     groups,
     iban: ibanText,
-    name: holder || S.nameOnCard,
-    nameIsPlaceholder: !holder,
+    name: holder,
     title: S.cardTitle,
+    shop,
   });
 }
 
@@ -178,6 +191,35 @@ async function draw(model) {
   }
   if (seq !== renderSeq) return;
   renderCard(ui.card, { ...model, logo });
+}
+
+const SHOP_LOGO_ERRORS = { type: S.shopLogoBadType, size: S.shopLogoTooBig, broken: S.shopLogoBroken };
+
+// A rejected file keeps the logo already on the card.
+async function onShopLogo() {
+  const file = ui.shopLogo.files?.[0];
+  // Cleared so picking the same file again still fires change.
+  ui.shopLogo.value = '';
+  if (!file) return;
+  const seq = ++shopLogoSeq;
+  try {
+    const logo = await readShopLogo(file);
+    if (seq !== shopLogoSeq) return;
+    shopLogo = logo;
+    setStatus(ui.shopLogoStatus, '');
+  } catch (err) {
+    if (seq !== shopLogoSeq) return;
+    setStatus(ui.shopLogoStatus, SHOP_LOGO_ERRORS[err?.reason] ?? S.shopLogoBroken, 'error');
+  }
+  update();
+}
+
+function onShopLogoRemove() {
+  shopLogoSeq++;
+  shopLogo = null;
+  setStatus(ui.shopLogoStatus, '');
+  update();
+  ui.shopLogo.focus();
 }
 
 function fileName(bank) {
@@ -414,10 +456,12 @@ async function start() {
 
   ui.number.addEventListener('input', (e) => { reformat(ui.number, cardExtract, cardFormat, e); update(); });
   ui.iban.addEventListener('input', (e) => { reformat(ui.iban, ibanExtract, ibanFormat, e); update(); });
-  for (const node of [ui.holder, ui.ibanOn, ui.smaller, ui.bluBank, ...document.querySelectorAll('input[name="template"], input[name="digits"], input[name="size"]')]) {
-    node.addEventListener(node === ui.holder ? 'input' : 'change', update);
+  for (const node of [ui.holder, ui.shopName, ui.ibanOn, ui.shopOn, ui.smaller, ui.bluBank, ...document.querySelectorAll('input[name="template"], input[name="digits"], input[name="size"]')]) {
+    node.addEventListener(node.type === 'text' ? 'input' : 'change', update);
   }
-  ui.holder.addEventListener('input', () => { ui.holder.dir = textDir(ui.holder.value); });
+  for (const input of [ui.holder, ui.shopName]) input.addEventListener('input', () => { input.dir = textDir(input.value); });
+  ui.shopLogo.addEventListener('change', onShopLogo);
+  ui.shopLogoRemove.addEventListener('click', onShopLogoRemove);
   // Goes through the input listeners above, so everything resets as if the text had been deleted by hand.
   for (const { input, button } of clearable) {
     const clear = () => {

@@ -89,6 +89,23 @@
       </div>
     </div>
 
+    <div class="field">
+      <label class="switch"><input type="checkbox" id="shop-on"><span>{{shopToggle}}</span></label>
+      <div class="shop-box" id="shop-box" hidden>
+        <div class="logo-row">
+          <label class="file-pick"><input type="file" id="shop-logo" class="visually-hidden" accept=".png,.svg,image/png,image/svg+xml" aria-describedby="shop-logo-status shop-logo-hint"><span>{{shopLogoPick}}</span></label>
+          <button type="button" class="ghost" id="shop-logo-remove" hidden>{{shopLogoRemove}}</button>
+        </div>
+        <p class="status" id="shop-logo-status" aria-live="polite"></p>
+        <p class="hint" id="shop-logo-hint">{{shopLogoHint}}</p>
+        <label for="shop-name">{{shopNameLabel}}</label>
+        <div class="clearable">
+          <input id="shop-name" type="text" dir="rtl" autocomplete="off" spellcheck="false" maxlength="40" placeholder="{{shopNamePlaceholder}}">
+          <button type="button" class="clear" id="shop-name-clear" tabindex="-1" aria-label="{{clearShopName}}" title="{{clearShopName}}" hidden><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+      </div>
+    </div>
+
     <fieldset class="field choice">
       <legend>{{digitsLabel}}</legend>
       <label><input type="radio" name="digits" value="fa"><span>{{digitsFa}}</span></label>
@@ -157,7 +174,7 @@
 <footer class="bottom">
   <p class="motto">{{motto}}</p>
   <p class="links"><a href="https://cyclone9.dev/cpcs" rel="noopener">{{productLink}}</a> · <a href="https://github.com/cyclone9/CPCS" rel="noopener">{{codeLink}}</a> · <a href="https://cafebazaar.ir/app/ir.cyclone9.cpck" target="_blank" rel="noopener noreferrer">{{cpckStoreLink}}</a></p>
-  <p class="copyright" dir="ltr" lang="en"><span class="part">© <span id="copyright-years">{{startYear}}</span> {{copyrightHolder}}</span><span class="sep" aria-hidden="true"> · </span><span class="part">{{fullName}}</span><span class="part version">{{versionLabel}}{{version}}</span></p>
+  <p class="copyright" dir="ltr" lang="en"><span class="part">© <span id="copyright-years">{{startYear}}</span> <a href="https://cyclone9.dev" rel="noopener">{{copyrightHolder}}</a></span><span class="sep" aria-hidden="true"> · </span><span class="part">{{fullName}}</span><span class="sep" aria-hidden="true"> · </span><span class="part">{{versionLabel}}{{version}}</span></p>
 </footer>
 
 <button type="button" class="to-top" id="to-top" aria-label="{{toTop}}" title="{{toTop}}">
