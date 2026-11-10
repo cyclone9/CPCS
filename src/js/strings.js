@@ -48,7 +48,8 @@ export const S = {
     ? `این شماره‌ی شبا مربوط به «${oldName}» است که در «${current}» ادغام شده است. استودیو کارت فقط از بانک‌های فعال پشتیبانی می‌کند و برای این شماره‌ی شبا تصویر نمی‌سازد.`
     : `این شماره‌ی شبا مربوط به «${oldName}» است که منحل شده است. استودیو کارت فقط از بانک‌های فعال پشتیبانی می‌کند و برای این شماره‌ی شبا تصویر نمی‌سازد.`),
   clearIban: 'پاک کردن شماره‌ی شبا',
-  ibanMismatch: (ibanBank, cardBank) => `بانک شماره‌ی شبا («${ibanBank}») با بانک کارت («${cardBank}») یکی نیست.`,
+  // The card's bank is already shown in the bank field, so only the IBAN's is named, without its «بانک» prefix.
+  ibanMismatch: (ibanBank) => `بانک شماره‌ی شبا (${ibanBank.replace(/^بانک\s+/, '')}) با بانک شماره‌ی کارت یکی نیست.`,
 
   shopToggle: 'لوگو و نام کسب‌وکار',
   shopLogoPick: 'انتخاب لوگو',

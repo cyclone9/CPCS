@@ -92,7 +92,7 @@ test('merged IBAN code: warning and download disabled while the IBAN option is o
   }
 });
 
-test('IBAN option: needs a valid IBAN; a different bank only warns', () => {
+test('IBAN option: needs a valid IBAN; a different bank blocks (owner, 2026-11-10)', () => {
   const number = makeCard('603799');
   assert.equal(assess(banks, { ...base, number, ibanOn: true, iban: '' }).ready, false);
   const same = assess(banks, { ...base, number, ibanOn: true, iban: toPersianDigits(makeIban('017').slice(2)) });
@@ -100,7 +100,7 @@ test('IBAN option: needs a valid IBAN; a different bank only warns', () => {
   assert.equal(same.mismatch, false);
   const other = assess(banks, { ...base, number, ibanOn: true, iban: makeIban('054') });
   assert.equal(other.mismatch, true);
-  assert.equal(other.ready, true);
+  assert.equal(other.ready, false);
 });
 
 test('unknown BIN: valid number, but no bank and no download, even with a bank picked by hand', () => {

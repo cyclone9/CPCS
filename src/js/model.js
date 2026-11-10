@@ -20,13 +20,20 @@ export function assess(banks, { number, ibanOn, iban, manualKey }) {
   const ibanCheck = ibanOn ? checkIban(iban) : null;
   const ibanMatch = ibanCheck?.state === 'valid' ? detectByIbanCode(banks, ibanBankCode(ibanCheck.iban)) : null;
   const ibanUnsupported = Boolean(ibanMatch && !ibanMatch.supported);
-  const mismatch = Boolean(bank && ibanMatch?.supported && ibanCodeOf(bank) !== ibanCodeOf(ibanMatch.bank));
+  // An IBAN of another bank than the card's (its BIN) or the one picked by hand blocks the image (owner,
+  // 2026-11-10): a customer could pay into the wrong account. mismatchBank is the one that differs, the card's first.
+  const ibanBank = ibanMatch?.supported ? ibanMatch.bank : null;
+  const differs = (b) => Boolean(b && ibanBank && ibanCodeOf(b) !== ibanCodeOf(ibanBank));
+  const cardBank = cardMatch?.supported ? cardMatch.bank : null;
+  const mismatchBank = differs(cardBank) ? cardBank : differs(bank) ? bank : null;
+  const mismatch = Boolean(mismatchBank);
 
-  const ready = card.state === 'valid' && !cardUnsupported && !cardUnknown && (!ibanOn || (ibanCheck.state === 'valid' && !ibanUnsupported));
+  const ready = card.state === 'valid' && !cardUnsupported && !cardUnknown
+    && (!ibanOn || (ibanCheck.state === 'valid' && !ibanUnsupported && !mismatch));
 
   const bluBank = bluBankOf(banks, bank, card.digits);
 
-  return { card, cardMatch, cardUnsupported, cardUnknown, bank, bluBank, ibanCheck, ibanMatch, ibanUnsupported, mismatch, ready };
+  return { card, cardMatch, cardUnsupported, cardUnknown, bank, bluBank, ibanCheck, ibanMatch, ibanUnsupported, mismatch, mismatchBank, ready };
 }
 
 export const CPCK_PAUSE_MS = 24 * 60 * 60 * 1000;

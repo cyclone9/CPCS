@@ -148,7 +148,7 @@ function update() {
     else if (state === 'checksum') setStatus(ui.ibanStatus, S.ibanChecksum, 'error');
     else if (a.ibanUnsupported) setStatus(ui.ibanStatus, S.ibanUnsupported(formerName(m.bank), m.successor?.fa), 'warning');
     else setStatus(ui.ibanStatus, S.ibanValid(m?.bank.fa), 'ok');
-    if (a.mismatch) setStatus(ui.ibanMatch, S.ibanMismatch(m.bank.fa, bank.fa), 'warning');
+    if (a.mismatch) setStatus(ui.ibanMatch, S.ibanMismatch(m.bank.fa), 'error');
   }
 
   const color = customColor ?? bank?.color ?? SLATE;
